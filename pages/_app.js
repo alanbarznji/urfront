@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/globals.css';
 import '../styles/customStyles.css';
+import { Provider } from 'react-redux';
+import store from '@/Redux/store';
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
@@ -23,7 +25,9 @@ function MyApp({ Component, pageProps }) {
           rel="stylesheet"
         />
       </Head>
+      <Provider store={store}>
       <Component {...pageProps} />
+      </Provider>
     </>
   );
 }

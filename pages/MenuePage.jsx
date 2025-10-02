@@ -10,7 +10,9 @@ import CartDrawer from "./Components/CartDrawer";
 import CartFloatingButton from "./Components/CartFloatingButton";
 import CartNotification from "./Components/CartNotification";
 // import OrderTypeModal from "./Components/OrderTypeModal"; // ✅ NEW IMPORT
-  
+  import { useDispatch, useSelector } from "react-redux";
+import { GetProductAction } from "@/Redux/Action/ProductAction";
+import { GetCategoryAction } from "@/Redux/Action/CategoryAction";
 
 export default function MenuePage() {
   // State management
@@ -31,7 +33,13 @@ export default function MenuePage() {
   const [orderType, setOrderType] = useState(null);
   const [showOrderTypeModal, setShowOrderTypeModal] = useState(false);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
-
+const dispatch = useDispatch();
+  useEffect(() => {
+dispatch(GetProductAction())
+dispatch(GetCategoryAction())
+  }, []);
+const product=useSelector((state)=>state.Product.Product)
+const Category=useSelector((state)=>state.Category.Category)
   const languages = [
     { code: "en", name: "English", flag: "🇺🇸" },
     { code: "fr", name: "Français", flag: "🇫🇷" },
@@ -47,7 +55,7 @@ export default function MenuePage() {
     { code: "JPY", symbol: "¥", name: "Japanese Yen" },
     { code: "AED", symbol: "د.إ", name: "UAE Dirham" },
   ];
-
+ 
   const handleAddToCart = (item) => {
     setCart((prev) => {
       const exists = prev.find((p) => p.id === item.id);
@@ -114,10 +122,10 @@ export default function MenuePage() {
   const { t } = useTranslation(language);
   const { convertPrice, getCurrencySymbol } = useCurrencyConverter(currency);
 
-  const categories = ["all", ...new Set(menuData.map((item) => item.category))];
+  const categories = [ {name:"all"},  ...new Set(Category.map((item) => item))];
 
-  const filteredMenu = menuData.filter((item) => {
-    if (activeCategory !== "all" && item.category !== activeCategory)
+  const filteredMenu = product.filter((item) => {
+    if (activeCategory !== "all" && item.category.name !== activeCategory)
       return false;
     if (
       searchQuery &&
@@ -164,6 +172,7 @@ export default function MenuePage() {
     return () => document.removeEventListener("click", closeDropdowns);
   }, []);
 
+console.log(product,Category);
   // ✅ UPDATED USEEFFECT WITH ORDER TYPE CHECK
   useEffect(() => {
     const storedDarkMode = localStorage.getItem("darkMode");
@@ -261,7 +270,7 @@ export default function MenuePage() {
                 letterSpacing: "0.5px",
               }}
             >
-              Zirak
+              UR
             </span>
           </a>
 
@@ -751,29 +760,6 @@ export default function MenuePage() {
         t={t}
         darkMode={darkMode}
       />
-
-      ✅ ORDER TYPE MODAL
-      {/* <OrderTypeModal
-        isOpen={showOrderTypeModal}
-        onSelect={handleOrderTypeSelect}
-      /> */}
-
-      {/* ✅ CHECKOUT FORM MODAL */}
-      {/* {showCheckoutForm && (
-        <CheckoutForm
-          orderType={orderType}
-          cartItems={cart}
-          total={cart.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
-          )}
-          onSubmit={handleOrderSubmit}
-          onCancel={() => setShowCheckoutForm(false)}
-          currencySymbol={getCurrencySymbol()}
-        />
-      )} */}
-
-      {/* Language/Currency Setup Modal */}
       {!showLanguageModal && (
         <div className="setup-modal-overlay">
           <div
@@ -786,7 +772,7 @@ export default function MenuePage() {
                 <i className="fas fa-utensils"></i>
               </div>
               <h4 className="modal-title">
-                {t("welcome") || "Welcome to Zirak!"}
+                {t("welcome") || "Welcome to UR!"}
               </h4>
             </div>
 

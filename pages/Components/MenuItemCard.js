@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 export default function MenuItemCard({ item, currencySymbol, convertPrice, t, darkMode, onAddToCart }) {
   // ✅ Prevent crash if item is undefined (Next.js build protection)
   if (!item || typeof item !== 'object') return null;
-
+console.log(item,"<<<<<<<");
   const [isFavorite, setIsFavorite] = useState(false);
-
+ 
   const getCategoryIcon = (category) => {
     const categoryIcons = {
       burgers: "fa-hamburger",
@@ -31,7 +31,7 @@ export default function MenuItemCard({ item, currencySymbol, convertPrice, t, da
         <div className="card-img-container" data-category={item.category}>
           <div className="item-icon">
             <img 
-              src="https://images.ctfassets.net/j8tkpy1gjhi5/5OvVmigx6VIUsyoKz1EHUs/b8173b7dcfbd6da341ce11bcebfa86ea/Salami-pizza-hero.jpg?w=1440&fm=webp&q=80" 
+              src={`${item.imageUrl }`}
               className="card-img-top" 
               alt={item.name}
               loading="lazy"
@@ -52,7 +52,7 @@ export default function MenuItemCard({ item, currencySymbol, convertPrice, t, da
           </div>
 
           <div className="category-badge">
-            {t(`categories.${item.category}`)}
+            {t(`${item.category.name}`)}
           </div>
 
           <div className="overlay-buttons">
