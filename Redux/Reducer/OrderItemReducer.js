@@ -31,6 +31,14 @@ const OrderItemsReducer = (state = initialState, action) => {
         OrderItems: action.payload, // single object
       };
 
+    case "errNull":
+      return {
+        ...state,
+        loading: false,
+        errState: true,
+        error: action.err,
+        OrderItems:[]
+      };
     case "err":
       return {
         ...state,

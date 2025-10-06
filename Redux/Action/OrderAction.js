@@ -29,13 +29,12 @@ export const GetOrdersAction = (queryString = "") => {
  
     try {
 
-      const url = queryString ? `/orders?${queryString}` : `/orders`;
+      const url = queryString ? `/order?${queryString}` : `/order`;
       console.log(url);
       const res = await API.get(url);
-      // list endpoint returns { results, paginationResult, data: [...] }
-  
+ 
       dispatch({
-        type: "OrdersGet",
+        type: "OrderGet",
         payload: res.data?.data || [],
         status: res.status,
       });
@@ -51,7 +50,7 @@ export const GetOrdersSearchAction = (search) => {
   return async (dispatch) => {
     dispatch({ type: "OrdersReqStart" });
     try {
-      const res = await API.get(`/orders?${search}`);
+      const res = await API.get(`/order?${search}`);
       dispatch({
         type: "OrdersGet",
         payload: res.data?.data || [],
@@ -69,7 +68,7 @@ export const GetOneOrdersAction = (id) => {
  
     try {
       
-      const res = await API.post(`/orders/${id}`);
+      const res = await API.post(`/order/${id}`);
       // single endpoint returns { data: {...} }
       
 
@@ -88,19 +87,17 @@ export const GetOneOrdersAction = (id) => {
 
 // ===== CREATE =====
 export const InsertOrdersAction = (
-Cop,
-Discount,
+
+  TableName
 
 ) => {
   return async (dispatch) => {
- 
     try {
-      console.log(Cop,Discount);
-      await API.post(
-        `/orders`,
+ console.log(TableName,"TableName");
+     const res= await API.post(
+        `/order`,
         {
-          Cop,
-          Discount,
+      TableName
         },
         {
           headers: {
@@ -109,16 +106,29 @@ Discount,
           },
         }
       );
+      console.log(res);
+      console.log(res.data.data.id, "ressss2222");
+      if(res.status!==201){
+        throw new Error("Failed to create order")
+   }
+
+  await localStorage.setItem("orderId",res.data.data.id)
       // your reducer expects list in payload, and delete returns 204 with no body,
       // so we standardize by refreshing the list after mutations:
-      const list = await API.get(`/orders`);
+      console.log(res.data,"ressss");
+      const list = await API.get(`/order`);
+
       dispatch({
-        type: "OrdersInsert",
+        type: "OrderInsert",
         payload: list.data?.data || [],
         status: list.status,
       });
+return true
     } catch (error) {
+      window.alert("Failed to create order")
+console.log(error,"faild");
       dispatch({ type: "err", err: getErr(error), status: getStatus(error) });
+      return false
     }
   };
 };
@@ -129,13 +139,13 @@ export const PutOrdersAction = (id, changes) => {
   return async (dispatch) => {
     dispatch({ type: "OrdersReqStart" });
     try {
-      await API.put(`/orders/${id}`, changes, {
+      await API.put(`/order/${id}`, changes, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("Token")}`,
         },
       });
-      const list = await API.get(`/orders`);
+      const list = await API.get(`/order`);
       dispatch({
         type: "OrdersPut",
         payload: list.data?.data || [],
@@ -152,13 +162,14 @@ export const DeleteOrdersAction = (id) => {
   return async (dispatch) => {
     dispatch({ type: "OrdersReqStart" });
     try {
-      await API.delete(`/orders/${id}`, {
+      await API.delete(`/order/${id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("Token")}`,
         },
       }); // backend sends 204 with no body
-      const list = await API.get(`/orders`);
+      localStorage.removeItem("orderId");
+      const list = await API.get(`/order`);
       dispatch({
         type: "OrdersDelete",
         payload: list.data?.data || [],

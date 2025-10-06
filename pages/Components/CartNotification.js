@@ -37,7 +37,7 @@ export default function CartNotification({
         >
    <div className="item-icon">
                   <img 
-    src="https://images.ctfassets.net/j8tkpy1gjhi5/5OvVmigx6VIUsyoKz1EHUs/b8173b7dcfbd6da341ce11bcebfa86ea/Salami-pizza-hero.jpg?w=1440&fm=webp&q=80" 
+    src={item.imageUrl} 
     className="card-img-top" 
     alt={item.name}
     loading="lazy"

@@ -28,16 +28,20 @@ export const GetOrderItemsAction = (queryString = "") => {
   return async (dispatch) => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
-      const url = queryString ? `/orderItems?${queryString}` : `/orderItems`;
+      console.log("get order items action");
+      const url = queryString
+        ? `/orderitems?${queryString}`
+        : `/order/table/${localStorage.getItem("orderId")}`;
       const res = await API.get(url);
       // list endpoint returns { results, paginationResult, data: [...] }
+      console.log("gegegegeg");
       dispatch({
         type: "OrderItemsGet",
         payload: res.data?.data || [],
         status: res.status,
       });
     } catch (error) {
-      dispatch({ type: "err", err: getErr(error), status: getStatus(error) });
+      dispatch({ type: "errNull", err: getErr(error), status: getStatus(error) });
     }
   };
 };
@@ -45,7 +49,7 @@ export const GetOrderItemsOneAction = (From,To) => {
   // queryString can be "", or something like "page=1&limit=20&keyword=knife"
   return async (dispatch) => { 
     try {
-      const url =   `/orderItems/orderItems`  ;
+      const url =   `/orderitems/orderitems`  ;
       const res = await API.post(
         url,
         { From, To },
@@ -74,7 +78,7 @@ export const GetOrderItemsSearchAction = (search) => {
   return async (dispatch) => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
-      const res = await API.get(`/orderItems?${search}`);
+      const res = await API.get(`/orderitems?${search}`);
       dispatch({
         type: "OrderItemsGet",
         payload: res.data?.data || [],
@@ -91,7 +95,7 @@ export const GetOneOrderItemsAction = (id) => {
   return async (dispatch) => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
-      const res = await API.get(`/orderItems/${id}`);
+      const res = await API.get(`/orderitems/${id}`);
       // single endpoint returns { data: {...} }
       dispatch({
         type: "OrderItemsGetOne",
@@ -105,22 +109,15 @@ export const GetOneOrderItemsAction = (id) => {
 };
 
 // ===== CREATE =====
-export const InsertOrderItemsAction = ({
-From,
-To,
-Price,
- 
- 
-}) => {
+export const InsertOrderItemsAction = ( productId ) => {
   return async (dispatch) => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
       await API.post(
-        `/orderItems`,
+        `/orderitems/${localStorage.getItem("orderId")}`,
         {
-          From,
-          To,
-          Price,
+          productId,
+          quantity: 1,
         },
         {
           headers: {
@@ -131,7 +128,7 @@ Price,
       );
       // your reducer expects list in payload, and delete returns 204 with no body,
       // so we standardize by refreshing the list after mutations:
-      const list = await API.get(`/orderItems`);
+      const list = await API.get(`/orderitems`);
       dispatch({
         type: "OrderItemsInsert",
         payload: list.data?.data || [],
@@ -149,13 +146,13 @@ export const PutOrderItemsAction = (id, changes) => {
   return async (dispatch) => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
-      await API.put(`/orderItems/${id}`, changes, {
+      await API.put(`/orderitems/${id}`, changes, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("Token")}`,
         },
       });
-      const list = await API.get(`/orderItems`);
+      const list = await API.get(`/orderitems`);
       dispatch({
         type: "OrderItemsPut",
         payload: list.data?.data || [],
@@ -172,13 +169,13 @@ export const DeleteOrderItemsAction = (id) => {
   return async (dispatch) => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
-      await API.delete(`/orderItems/${id}`, {
+      await API.delete(`/orderitems/${id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("Token")}`,
         },
       }); // backend sends 204 with no body
-      const list = await API.get(`/orderItems`);
+      const list = await API.get(`/orderitems`);
       dispatch({
         type: "OrderItemsDelete",
         payload: list.data?.data || [],

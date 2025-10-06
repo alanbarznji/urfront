@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
+  const [deliveryOrders, setDeliveryOrders] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([
     { value: 'burgers', label: 'Burgers', icon: 'fa-hamburger' },
@@ -14,7 +15,7 @@ export default function AdminDashboard() {
     { value: 'mains', label: 'Mains', icon: 'fa-utensils' }
   ]);
   const [activeTab, setActiveTab] = useState('pending');
-  const [activeSection, setActiveSection] = useState('orders');
+  const [activeSection, setActiveSection] = useState('dine-in'); // ✅ NEW: dine-in or delivery
   const [showAddItemModal, setShowAddItemModal] = useState(false);
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -44,10 +45,12 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     loadOrders();
+    loadDeliveryOrders();
     loadMenuItems();
     loadCategories();
     const interval = setInterval(() => {
       loadOrders();
+      loadDeliveryOrders();
       loadMenuItems();
     }, 5000);
     return () => clearInterval(interval);
@@ -57,7 +60,20 @@ export default function AdminDashboard() {
     if (typeof window !== 'undefined') {
       const storedOrders = localStorage.getItem('orders');
       if (storedOrders) {
-        setOrders(JSON.parse(storedOrders));
+        const allOrders = JSON.parse(storedOrders);
+        // Filter only dine-in orders (with table numbers)
+        const dineInOrders = allOrders.filter(order => order.tableNumber);
+        setOrders(dineInOrders);
+      }
+    }
+  };
+
+  // ✅ NEW: Load delivery orders
+  const loadDeliveryOrders = () => {
+    if (typeof window !== 'undefined') {
+      const storedOrders = localStorage.getItem('deliveryOrders');
+      if (storedOrders) {
+        setDeliveryOrders(JSON.parse(storedOrders));
       }
     }
   };
@@ -80,12 +96,20 @@ export default function AdminDashboard() {
     }
   };
 
-  const updateOrderStatus = (orderId, newStatus) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId ? { ...order, status: newStatus } : order
-    );
-    setOrders(updatedOrders);
-    localStorage.setItem('orders', JSON.stringify(updatedOrders));
+  const updateOrderStatus = (orderId, newStatus, isDelivery = false) => {
+    if (isDelivery) {
+      const updatedOrders = deliveryOrders.map(order => 
+        order.id === orderId ? { ...order, status: newStatus } : order
+      );
+      setDeliveryOrders(updatedOrders);
+      localStorage.setItem('deliveryOrders', JSON.stringify(updatedOrders));
+    } else {
+      const updatedOrders = orders.map(order => 
+        order.id === orderId ? { ...order, status: newStatus } : order
+      );
+      setOrders(updatedOrders);
+      localStorage.setItem('orders', JSON.stringify(updatedOrders));
+    }
   };
 
   const handleAddItem = () => {
@@ -158,7 +182,6 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Check if category value already exists
     if (categories.some(cat => cat.value === newCategory.value.toLowerCase())) {
       alert('Category already exists!');
       return;
@@ -198,7 +221,6 @@ export default function AdminDashboard() {
   };
 
   const handleDeleteCategory = (categoryValue) => {
-    // Check if any items use this category
     const itemsInCategory = menuItems.filter(item => item.category === categoryValue);
     if (itemsInCategory.length > 0) {
       alert(`Cannot delete category. ${itemsInCategory.length} items are using this category. Please reassign or delete those items first.`);
@@ -213,7 +235,14 @@ export default function AdminDashboard() {
     }
   };
 
-  const filteredOrders = orders.filter(order => order.status === activeTab);
+  // ✅ Get current orders based on section
+  const currentOrders = activeSection === 'delivery' ? deliveryOrders : orders;
+  const filteredOrders = currentOrders.filter(order => order.status === activeTab);
+
+  // ✅ Calculate stats
+  const dineInPending = orders.filter(o => o.status === 'pending').length;
+  const deliveryPending = deliveryOrders.filter(o => o.status === 'pending').length;
+  const totalPending = dineInPending + deliveryPending;
 
   return (
     <div className="admin-dashboard">
@@ -230,8 +259,22 @@ export default function AdminDashboard() {
             <div className="stat-card">
               <i className="fas fa-clock"></i>
               <div>
-                <h3>{orders.filter(o => o.status === 'pending').length}</h3>
-                <p>Pending Orders</p>
+                <h3>{totalPending}</h3>
+                <p>Total Pending</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <i className="fas fa-chair"></i>
+              <div>
+                <h3>{dineInPending}</h3>
+                <p>Dine-In Pending</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <i className="fas fa-motorcycle"></i>
+              <div>
+                <h3>{deliveryPending}</h3>
+                <p>Delivery Pending</p>
               </div>
             </div>
             <div className="stat-card">
@@ -241,13 +284,6 @@ export default function AdminDashboard() {
                 <p>Menu Items</p>
               </div>
             </div>
-            <div className="stat-card">
-              <i className="fas fa-th-large"></i>
-              <div>
-                <h3>{categories.length}</h3>
-                <p>Categories</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -255,11 +291,26 @@ export default function AdminDashboard() {
       <div className="dashboard-body">
         <div className="section-tabs">
           <button
-            className={`section-tab ${activeSection === 'orders' ? 'active' : ''}`}
-            onClick={() => setActiveSection('orders')}
+            className={`section-tab ${activeSection === 'dine-in' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveSection('dine-in');
+              setActiveTab('pending');
+            }}
           >
-            <i className="fas fa-shopping-bag"></i>
-            Orders
+            <i className="fas fa-chair"></i>
+            Dine-In Orders
+            <span className="badge-count">{orders.length}</span>
+          </button>
+          <button
+            className={`section-tab ${activeSection === 'delivery' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveSection('delivery');
+              setActiveTab('pending');
+            }}
+          >
+            <i className="fas fa-motorcycle"></i>
+            Delivery Orders
+            <span className="badge-count">{deliveryOrders.length}</span>
           </button>
           <button
             className={`section-tab ${activeSection === 'menu' ? 'active' : ''}`}
@@ -277,8 +328,8 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* Orders Section */}
-        {activeSection === 'orders' && (
+        {/* Orders Section - Both Dine-In and Delivery */}
+        {(activeSection === 'dine-in' || activeSection === 'delivery') && (
           <>
             <div className="tabs">
               {['pending', 'preparing', 'ready', 'completed'].map(tab => (
@@ -288,7 +339,7 @@ export default function AdminDashboard() {
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  <span className="badge">{orders.filter(o => o.status === tab).length}</span>
+                  <span className="badge">{currentOrders.filter(o => o.status === tab).length}</span>
                 </button>
               ))}
             </div>
@@ -300,9 +351,9 @@ export default function AdminDashboard() {
                     <div className="order-header">
                       <div className="order-info">
                         <h3>{order.orderNumber}</h3>
-                        <span className={`order-type ${order.type}`}>
-                          <i className={`fas ${order.type === 'delivery' ? 'fa-motorcycle' : 'fa-store'}`}></i>
-                          {order.type === 'delivery' ? 'Delivery' : 'Dine In'}
+                        <span className={`order-type ${activeSection === 'delivery' ? 'delivery' : 'dine-in'}`}>
+                          <i className={`fas ${activeSection === 'delivery' ? 'fa-motorcycle' : 'fa-chair'}`}></i>
+                          {activeSection === 'delivery' ? 'Delivery' : 'Dine In'}
                         </span>
                       </div>
                       <span className="order-time">{new Date(order.time).toLocaleTimeString()}</span>
@@ -313,21 +364,34 @@ export default function AdminDashboard() {
                         <i className="fas fa-user"></i>
                         <span>{order.customerName}</span>
                       </div>
-                      {order.type === 'delivery' ? (
+                      
+                      {activeSection === 'delivery' ? (
+                        // ✅ DELIVERY ORDER INFO
                         <>
                           <div className="info-row">
-                            <i className="fas fa-map-marker-alt"></i>
-                            <span>{order.address}</span>
+                            <i className="fas fa-phone"></i>
+                            <span>{order.customerInfo?.phone1}</span>
                           </div>
                           <div className="info-row">
                             <i className="fas fa-phone"></i>
-                            <span>{order.phone}</span>
+                            <span>{order.customerInfo?.phone2}</span>
+                          </div>
+                          {order.customerInfo?.phone3 && (
+                            <div className="info-row">
+                              <i className="fas fa-phone"></i>
+                              <span>{order.customerInfo?.phone3}</span>
+                            </div>
+                          )}
+                          <div className="info-row">
+                            <i className="fas fa-map-marker-alt"></i>
+                            <span>{order.customerInfo?.address}</span>
                           </div>
                         </>
                       ) : (
+                        // ✅ DINE-IN ORDER INFO
                         <div className="info-row">
                           <i className="fas fa-chair"></i>
-                          <span>{order.tableNumber || 'Not specified'}</span>
+                          <span>Table {order.tableNumber || 'Not specified'}</span>
                         </div>
                       )}
                     </div>
@@ -350,22 +414,35 @@ export default function AdminDashboard() {
                       <div className="actions">
                         {order.status === 'pending' && (
                           <>
-                            <button className="btn-action accept" onClick={() => updateOrderStatus(order.id, 'preparing')}>
+                            <button 
+                              className="btn-action accept" 
+                              onClick={() => updateOrderStatus(order.id, 'preparing', activeSection === 'delivery')}
+                            >
                               <i className="fas fa-check"></i> Accept
                             </button>
-                            <button className="btn-action reject" onClick={() => updateOrderStatus(order.id, 'cancelled')}>
+                            <button 
+                              className="btn-action reject" 
+                              onClick={() => updateOrderStatus(order.id, 'cancelled', activeSection === 'delivery')}
+                            >
                               <i className="fas fa-times"></i> Reject
                             </button>
                           </>
                         )}
                         {order.status === 'preparing' && (
-                          <button className="btn-action ready" onClick={() => updateOrderStatus(order.id, 'ready')}>
+                          <button 
+                            className="btn-action ready" 
+                            onClick={() => updateOrderStatus(order.id, 'ready', activeSection === 'delivery')}
+                          >
                             <i className="fas fa-check-circle"></i> Mark Ready
                           </button>
                         )}
                         {order.status === 'ready' && (
-                          <button className="btn-action complete" onClick={() => updateOrderStatus(order.id, 'completed')}>
-                            <i className="fas fa-flag-checkered"></i> Complete
+                          <button 
+                            className="btn-action complete" 
+                            onClick={() => updateOrderStatus(order.id, 'completed', activeSection === 'delivery')}
+                          >
+                            <i className="fas fa-flag-checkered"></i> 
+                            {activeSection === 'delivery' ? 'Out for Delivery' : 'Complete'}
                           </button>
                         )}
                       </div>
@@ -682,10 +759,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
-
- 
-        
-     
     </div>
   );
 }

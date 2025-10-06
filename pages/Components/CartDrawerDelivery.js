@@ -1,9 +1,9 @@
-// components/CartDrawer.js - UPDATED WITH CHECKOUT BUTTON
+// components/CartDrawerDelivery.js - CART WITH CUSTOMER INFO DISPLAY
 
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function CartDrawer({
+export default function CartDrawerDelivery({
   cartItems,
   currencySymbol,
   convertPrice,
@@ -12,13 +12,12 @@ export default function CartDrawer({
   onClose,
   onUpdateQuantity,
   onRemoveItem,
-  onCheckout, // ✅ NEW PROP
+  onCheckout,
   darkMode,
+  customerInfo, // ✅ NEW PROP
 }) {
-  console.log("CartDrawer rendered", cartItems);
-  // Calculate total price
   const total = cartItems?.reduce(
-    (sum, item) => sum + item.product?.price * item.quantity,
+    (sum, item) => sum + item.price * item.quantity,
     0
   );
 
@@ -46,15 +45,14 @@ export default function CartDrawer({
   // Handle quantity update with validation
   const handleQuantityChange = (item, newQuantity) => {
     if (newQuantity < 1) return;
-    console.log("Updating quantity for item", item.id, "to", newQuantity);
     onUpdateQuantity(item.id, newQuantity);
   };
 
-  // Calculate subtotal
+  // Calculate totals
   const subtotal = total;
-  const tax = total * 0.1; // 10% tax as example
-  const shipping = total > 0 ? 5.99 : 0; // Example shipping fee
-  const grandTotal = subtotal + tax + shipping;
+  const tax = total * 0.1;
+  const deliveryFee = total > 0 ? 5.99 : 0;
+  const grandTotal = subtotal + tax + deliveryFee;
 
   return (
     <>
@@ -91,6 +89,72 @@ export default function CartDrawer({
               </button>
             </div>
 
+            {/* ✅ CUSTOMER INFO DISPLAY */}
+            {customerInfo && (
+              <div className="cart-customer-info">
+                <div className="customer-info-card">
+                  <div className="customer-header">
+                    <i className="fas fa-user-circle"></i>
+                    <h3>Delivery Information</h3>
+                  </div>
+
+                  <div className="customer-details">
+                    <div className="detail-row">
+                      <i className="fas fa-user"></i>
+                      <div className="detail-content">
+                        <span className="detail-label">Name</span>
+                        <span className="detail-value">
+                          {customerInfo.name}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="detail-row">
+                      <i className="fas fa-phone"></i>
+                      <div className="detail-content">
+                        <span className="detail-label">Phone 1</span>
+                        <span className="detail-value">
+                          {customerInfo.phone1}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="detail-row">
+                      <i className="fas fa-phone"></i>
+                      <div className="detail-content">
+                        <span className="detail-label">Phone 2</span>
+                        <span className="detail-value">
+                          {customerInfo.phone2}
+                        </span>
+                      </div>
+                    </div>
+
+                    {customerInfo.phone3 && (
+                      <div className="detail-row">
+                        <i className="fas fa-phone"></i>
+                        <div className="detail-content">
+                          <span className="detail-label">Phone 3</span>
+                          <span className="detail-value">
+                            {customerInfo.phone3}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="detail-row">
+                      <i className="fas fa-map-marker-alt"></i>
+                      <div className="detail-content">
+                        <span className="detail-label">Address</span>
+                        <span className="detail-value">
+                          {customerInfo.address}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="cart-drawer-body">
               {cartItems.length > 0 ? (
                 <>
@@ -98,20 +162,18 @@ export default function CartDrawer({
                     {cartItems.map((item) => (
                       <li key={item.id} className="cart-item">
                         <img
-                          src={"http://localhost:4000/uploads/image/"+item?.product?.image}
+                          src="https://images.ctfassets.net/j8tkpy1gjhi5/5OvVmigx6VIUsyoKz1EHUs/b8173b7dcfbd6da341ce11bcebfa86ea/Salami-pizza-hero.jpg?w=1440&fm=webp&q=80"
                           className="card-img-top p-2 rounded-4"
-                          alt={item.product?.name}
+                          alt={item.name}
                           loading="lazy"
                           style={{ height: "100px", width: "100px" }}
                         />
                         <div className="cart-item-details">
                           <div className="cart-item-info">
-                            <h3 className="cart-item-name">
-                              {item.product?.name}
-                            </h3>
+                            <h3 className="cart-item-name">{item.name}</h3>
                             <p className="cart-item-price">
                               {currencySymbol}
-                              {convertPrice(item.product?.price)}
+                              {convertPrice(item.price)}
                             </p>
                           </div>
                           <div className="cart-item-controls">
@@ -119,10 +181,7 @@ export default function CartDrawer({
                               <button
                                 className="quantity-btn"
                                 onClick={() =>
-                                  handleQuantityChange(
-                                    item,
-                                    item.quantity - 1
-                                  )
+                                  handleQuantityChange(item, item.quantity - 1)
                                 }
                                 disabled={item.quantity <= 1}
                               >
@@ -168,10 +227,10 @@ export default function CartDrawer({
                       </span>
                     </div>
                     <div className="summary-row">
-                      <span>{t("shipping")}</span>
+                      <span>Delivery Fee</span>
                       <span>
                         {currencySymbol}
-                        {convertPrice(shipping)}
+                        {convertPrice(deliveryFee)}
                       </span>
                     </div>
                     <div className="summary-row total">
@@ -206,13 +265,12 @@ export default function CartDrawer({
                   <i className="fas fa-arrow-left me-2"></i>
                   {t("continueShopping")}
                 </button>
-                {/* ✅ UPDATED CHECKOUT BUTTON */}
                 <button
                   className="cart-checkout rounded-3"
                   onClick={onCheckout}
                 >
-                  {t("checkout")}
-                  <i className="fas fa-arrow-right ms-2"></i>
+                  Place Order
+                  <i className="fas fa-check ms-2"></i>
                 </button>
               </div>
             )}
@@ -221,20 +279,4 @@ export default function CartDrawer({
       </AnimatePresence>
     </>
   );
-}
-
-// Helper function to get icon based on category
-function getIconForCategory(category) {
-  const categoryIcons = {
-    burgers: "fa-hamburger",
-    sandwiches: "fa-bread-slice",
-    pizzas: "fa-pizza-slice",
-    salads: "fa-leaf",
-    desserts: "fa-ice-cream",
-    drinks: "fa-glass-martini",
-    sides: "fa-french-fries",
-    mains: "fa-utensils",
-  };
-
-  return categoryIcons[category] || "fa-utensils";
 }
