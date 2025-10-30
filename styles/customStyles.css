@@ -4,29 +4,32 @@
 /* Bronze Color Scheme Variables - Add to the top of customStyles.css */
 @import url('https://fonts.googleapis.com/css2?family=Lemonada:wght@300..700&family=Readex+Pro:wght@160..700&display=swap');
 :root {
- 
-    --primary: #f44336;
-    --primary-light: #e57373;
-    --primary-dark: #d32f2f;
-    --secondary: #c62828;
-    --secondary-light: #ef5350;
 
-    --accent: #ffcdd2;
-    --accent-light: #ffebee;
-  
-  /* UI colors */
-  --dark: #0f0f0f0f;
-  --light: #f9f6f3;
-  --gray: #8a7968;
-  --success: #789d7c;
+    /* Logo-based color palette */
+    --primary: #b4361f;
+    --primary-light: #d35a3d;
+    --primary-dark: #8f2a18;
+    --secondary: #9a2e19;
+    --secondary-light: #c54428;
+
+    --accent: #e8a692;
+    --accent-light: #f4c9bc;
+
+  /* UI colors - Coordinated with logo */
+  --dark: #454543;
+  --light: #f0efee;
+  --gray: #8f8e8c;
+  --success: #6b8e23;
   --warning: #d4a76a;
-  --danger: #c25b55;
+  --danger: #b4361f;
   --info: #7a97ab;
   
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-light));
   --gradient-secondary: linear-gradient(135deg, var(--secondary), var(--secondary-light));
   --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-light));
+  --gradient-background: linear-gradient(135deg, #8f8e8c 0%, #454543 100%);
+  --gradient-background-subtle: linear-gradient(135deg, #f0efee 0%, #e3e2e0 100%);
   
   /* UI elements - unchanged */
   --border-radius: 10px;
@@ -52,11 +55,11 @@
 } */
 
 .dark-mode {
-  --bg-color: #0f0f0f;
-  --card-bg: #383838;
-  --text-color: #e8d5c0;
-  --border-color: #3d3128;
-  --muted-color: #a89783;
+  --bg-color: #1a1a1a;
+  --card-bg: #2d2d2d;
+  --text-color: #f0efee;
+  --border-color: #454543;
+  --muted-color: #8f8e8c;
 }
 
 body {
@@ -698,6 +701,16 @@ body {
 
 .bg-gradient {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
+}
+
+.bg-gradient-dark {
+  background: var(--gradient-background);
+  color: var(--light);
+}
+
+.bg-gradient-light {
+  background: var(--gradient-background-subtle);
+  color: var(--dark);
 }
 
 .hover-scale {
