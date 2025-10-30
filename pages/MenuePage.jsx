@@ -147,9 +147,7 @@ const getFilteredProductsByButton = (e) => {
           darkMode ? "navbar-dark" : ""
         } sticky-top shadow-sm`}
         style={{
-          // background:  
-            //  "linear-gradient(135deg, #252018 0%, #3d3128 100%)"
- 
+          background: "linear-gradient(135deg, #8f8e8c 0%, #454543 100%)",
           padding: "12px 0",
         }}
       >
@@ -159,7 +157,7 @@ const getFilteredProductsByButton = (e) => {
             <span
               className="fw-bold"
               style={{
-                background: "linear-gradient(45deg, #b87333, #8c5425)",
+                background: "linear-gradient(45deg, #b4361f, #d35a3d)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 fontSize: "1.6rem",
@@ -178,16 +176,13 @@ const getFilteredProductsByButton = (e) => {
               <button
                 className="language-selector btn btn-sm d-flex align-items-center gap-2"
                 style={{
-                  backgroundColor: 
-                    "#f44336",
-              
-                  border:  "1px solid rgba(255, 255, 255, 0.2)",
-               
-                  color: "var(--text-color)",
+                  background: "linear-gradient(135deg, #b4361f, #d35a3d)",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  color: "#ffffff",
                   borderRadius: "20px",
                   padding: "8px 16px",
                   transition: "all 0.3s ease",
-                  boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                  boxShadow: "0 4px 15px rgba(180, 54, 31, 0.3)",
                   height: "40px",
                 }}
                 onClick={(e) => {
@@ -217,12 +212,13 @@ const getFilteredProductsByButton = (e) => {
                   style={{
                     minWidth: "220px",
                     [language === "ar" ? "left" : "right"]: 0,
-                    backgroundColor:   "#2a2a2a" ,
-                    border:   "1px solid #f44336"  ,
+                    backgroundColor: "#2d2d2d",
+                    border: "1px solid #b4361f",
                     padding: "0.5rem",
                     animation: "fadeSlideIn 0.3s ease",
                     transformOrigin:
                       language === "ar" ? "top left" : "top right",
+                    boxShadow: "0 10px 30px rgba(180, 54, 31, 0.3)",
                   }}
                 >
                   {languages.map((lang) => (
@@ -239,10 +235,9 @@ const getFilteredProductsByButton = (e) => {
                         padding: "10px 12px",
                         borderRadius: "10px",
                         cursor: "pointer",
-                        backgroundColor:
+                        background:
                           language === lang.code
-                            ?   "#f44336"
-                             
+                            ? "linear-gradient(135deg, #b4361f, #d35a3d)"
                             : "transparent",
                       }}
                     >
@@ -259,44 +254,34 @@ const getFilteredProductsByButton = (e) => {
               <Link
                 className="currency-selector btn btn-sm d-flex align-items-center gap-2"
                 style={{
-                  backgroundColor: "#f44336",
-                  border:  "1px solid rgba(255, 255, 255, 0.2)",
-                   
-                  color: darkMode ? "#333333" : "#333333",
+                  background: "linear-gradient(135deg, #b4361f, #d35a3d)",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  color: "#ffffff",
                   borderRadius: "20px",
                   padding: "8px 16px",
                   transition: "all 0.3s ease",
-                  boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                  boxShadow: "0 4px 15px rgba(180, 54, 31, 0.3)",
                   height: "40px",
                 }}
-    
-      href = "/reviewpage"  
-                   
-          
+      href = "/reviewpage"
               >
            {t("review")}
               </Link>
-
- 
             </div>
 
             {/* Dark Mode Toggle */}
             <button
               className="btn btn-sm rounded-circle d-flex align-items-center justify-content-center"
-              onClick={()=>{
-
-              }}
+              onClick={()=>{}}
               style={{
                 width: "38px",
                 height: "38px",
-                backgroundColor:  "#f44336"
-                  
+                background: "linear-gradient(135deg, #b4361f, #d35a3d)",
+                border: "none",
+                boxShadow: "0 4px 15px rgba(180, 54, 31, 0.3)",
               }}
             >
-                 {/* <span className="">{language=="ar"?"شائع":"Common"}</span> */}
-        < FaStar size={24} onClick={()=>setshowReviewsModal(true)} color={
-            "#2a2a2a"
-          }/>
+        < FaStar size={24} onClick={()=>setshowReviewsModal(true)} color="#ffffff"/>
             </button>
           </div>
         </div>
@@ -371,8 +356,8 @@ const getFilteredProductsByButton = (e) => {
         <div className="modal-overlay dark-mode" onClick={() => setshowReviewsModal(false)}>
           <div className="reviews-modal "     style={{
           background: darkMode
-            ? "linear-gradient(135deg, #252018 0%, #3d3128 100%)"
-            : "linear-gradient(135deg, #f9f6f3 0%, #e8d5c0 100%)",
+            ? "linear-gradient(135deg, #2d2d2d 0%, #454543 100%)"
+            : "linear-gradient(135deg, #f0efee 0%, #e3e2e0 100%)",
         }} onClick={(e) => e.stopPropagation()} dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <div className="reviews-modal-header">
               <h2>
