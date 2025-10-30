@@ -5,162 +5,50 @@ import CategorySlider from "./Components/CategorySlider";
 import MenuItemCard from "./Components/MenuItemCard";
 import { useTranslation } from "../src/data/useTranslation";
 import { useCurrencyConverter } from "../src/data/useCurrencyConverter";
-import CartDrawer from "./Components/CartDrawer";
-import CartFloatingButton from "./Components/CartFloatingButton";
+import logo from "../pages/assets/Logo.png";
 import CartNotification from "./Components/CartNotification";
 import { useDispatch, useSelector } from "react-redux";
 import { GetProductAction } from "@/Redux/Action/ProductAction";
 import { GetCategoryAction } from "@/Redux/Action/CategoryAction";
-import { DeleteOrderItemsAction, GetOrderItemsAction, InsertOrderItemsAction, PutOrderItemsAction } from "@/Redux/Action/OrderItemAction";
 import { DeleteOrdersAction, InsertOrdersAction } from "@/Redux/Action/OrderAction";
-
+import Link from "next/link";
+import { FaStar } from "react-icons/fa";
+import Image from "next/image";
 export default function MenuePage() {
-  // State management
   const [activeCategory, setActiveCategory] = useState("all");
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState("en");
   const [currency, setCurrency] = useState("USD");
   const [searchQuery, setSearchQuery] = useState("");
-  const [cart, setCart] = useState([]);
-  const [lastAddedItem, setLastAddedItem] = useState(null);
-  const [showMiniCart, setShowMiniCart] = useState(false);
-  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [showReviewsModal, setshowReviewsModal] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
-  const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const [Loading, setLoading] = useState(false);
-
-  // ✅ NEW STATES FOR TABLE SELECTION
-  const [tableNumber, setTableNumber] = useState(null);
-  const [showTableModal, setShowTableModal] = useState(false);
-  const [tempItemToAdd, setTempItemToAdd] = useState(null);
-  const [inputTableNumber, setInputTableNumber] = useState("");
-
+  const [filtershow, setfiltershow] = useState([]);
+  const [buttonSelection, setButtonSelection] = useState("common");
   const dispatch = useDispatch();
   
   useEffect(() => {
     dispatch(GetProductAction());
     dispatch(GetCategoryAction());
   }, []);
-  useEffect(() => {
-   const handele= async()=>{
-    console.log("loading",Loading);
-     await dispatch(GetOrderItemsAction());
-
-    }
- handele()
-  }, [Loading,dispatch]);
+ 
  
   const product = useSelector((state) => state.Product.Product);
-  const OrderItems = useSelector((state) => state.OrderItems.OrderItems);
+ 
   const Category = useSelector((state) => state.Category.Category);
 
   const languages = [
     { code: "en", name: "English", flag: "🇺🇸" },
-    { code: "fr", name: "Français", flag: "🇫🇷" },
-    { code: "es", name: "Español", flag: "🇪🇸" },
-    { code: "de", name: "Deutsch", flag: "🇩🇪" },
+ 
     { code: "ar", name: "العربية", flag: "🇸🇦" },
   ];
 
-  const currencies = [
-    { code: "USD", symbol: "$", name: "US Dollar" },
-    { code: "EUR", symbol: "€", name: "Euro" },
-    { code: "GBP", symbol: "£", name: "British Pound" },
-    { code: "JPY", symbol: "¥", name: "Japanese Yen" },
-    { code: "AED", symbol: "د.إ", name: "UAE Dirham" },
-  ];
-
-  // ✅ UPDATED ADD TO CART HANDLER
-  const handleAddToCart = async (item) => {
-    // If cart is empty and no table selected, show table modal first
-    if (cart.length === 0 && !tableNumber) {
-      setTempItemToAdd(item);
-      setShowTableModal(true);
-      return;
-    }
-console.log(item);
-    // Add item to cart normally
-         setLoading(true);
-         await dispatch(InsertOrderItemsAction(item.id))
-         await dispatch(GetOrderItemsAction());
-         setLoading(false);
-    // setCart((prev) => {
-    //   const exists = prev.find((p) => p.id === item.id);
-    //   if (exists) {
-    //     return prev.map((p) =>
-    //       p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
-    //     );
-    //   }
-    //   return [...prev, { ...item, quantity: 1 }];
-    // });
-  setLastAddedItem(item);
-  setShowMiniCart(true);
-  };
-
-  // ✅ NEW HANDLER FOR TABLE CONFIRMATION
-  const handleTableConfirm =async () => {
-    if (!inputTableNumber || inputTableNumber.trim() === "") {
-      alert("Please enter a table number");
-      return;
-    }
  
-const status= await dispatch(InsertOrdersAction(inputTableNumber))
-
-//   // Add the item to cart
-if(status){
-  if (tempItemToAdd) {
-    setTableNumber(inputTableNumber);
-    localStorage.setItem("tableNumber", inputTableNumber);
-    console.log(tempItemToAdd,"hehehehehh");
-    setLoading(true)
-    await dispatch(InsertOrderItemsAction(tempItemToAdd.id))
-    setLoading(false)
- 
- 
-      // setCart([{ ...tempItemToAdd, quantity: 1 }]);
-      // setLastAddedItem(tempItemToAdd);
-      // setShowMiniCart(true);
-    }
-
-    // Close modal and reset
-    setShowTableModal(false);
-    setInputTableNumber("");
-    setTempItemToAdd(null);
-  }
-  else{
-    
-    setShowTableModal(false);
-    setInputTableNumber("");
-    setTempItemToAdd(null);
-  }
-  };
-
-  // ✅ UPDATED HANDLER TO CLEAR CART AND TABLE
-  const handleClearCart =async () => {
-    if (confirm("Are you sure you want to clear the cart? This will delete all items and reset the table.")) {
-      setCart([]);
-      setTableNumber(null);
-      localStorage.removeItem("tableNumber");
-      // localStorage.removeItem("orderId");
-      setLoading(true);
-     await dispatch(DeleteOrdersAction(localStorage.getItem("orderId")));
-      setLoading(false);
-    }
-  };
-
-  // ✅ NEW CHECKOUT HANDLER
-  const handleCheckoutClick = () => {
-    setCartDrawerOpen(false);
-    // Add your checkout logic here
-    alert(`Order confirmed for Table ${tableNumber}!`);
-  };
-
   // Custom hooks
   const { t } = useTranslation(language);
   const { convertPrice, getCurrencySymbol } = useCurrencyConverter(currency);
 
-  const categories = [{ name: "all" }, ...Category];
+  const categories = [{ name: "all",namear:"الكل"  }, ...Category];
 
   const filteredMenu = product.filter((item) => {
     if (activeCategory !== "all" && item.category.name !== activeCategory)
@@ -168,12 +56,25 @@ if(status){
     if (
       searchQuery &&
       !item.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      !item.description.toLowerCase().includes(searchQuery.toLowerCase())
+      !item.description.toLowerCase().includes(searchQuery.toLowerCase())&&    
+      !item.namear.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !item.descriptionar.toLowerCase().includes(searchQuery.toLowerCase())
     )
       return false;
     return true;
   });
-
+const getFilteredProductsByButton = (e) => {
+  setButtonSelection(e);
+ if (buttonSelection === "suggest") {
+   console.log(product.filter(item => item.RestorantOption === false),"product------ ");
+   setfiltershow( product.filter(item => item.RestorantOption === true))
+  } else {
+    console.log(product.length);
+    setfiltershow( product)
+    console.log(product,"product------ ");
+    return product;
+    }
+}
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     if (!darkMode) {
@@ -188,26 +89,7 @@ if(status){
   };
 
   const handleSearch = (e) => setSearchQuery(e.target.value);
-
-  useEffect(() => {
-    const closeDropdowns = (e) => {
-      if (
-        !e.target.closest(".language-selector") &&
-        !e.target.closest(".language-dropdown")
-      ) {
-        setShowLanguageDropdown(false);
-      }
-      if (
-        !e.target.closest(".currency-selector") &&
-        !e.target.closest(".currency-dropdown")
-      ) {
-        setShowCurrencyDropdown(false);
-      }
-    };
-
-    document.addEventListener("click", closeDropdowns);
-    return () => document.removeEventListener("click", closeDropdowns);
-  }, []);
+ 
 
   useEffect(() => {
     const storedDarkMode = localStorage.getItem("darkMode");
@@ -230,12 +112,7 @@ if(status){
       setShowLanguageModal(true);
     }
 
-    // ✅ RESTORE TABLE NUMBER FROM LOCALSTORAGE
-    const storedTable = localStorage.getItem("tableNumber");
-    if (storedTable) {
-      setTableNumber(storedTable);
-    }
-
+   
     const storedCurrency = localStorage.getItem("currency");
     if (storedCurrency) setCurrency(storedCurrency);
   }, []);
@@ -256,37 +133,29 @@ if(status){
     return languages.find((lang) => lang.code === language) || languages[0];
   };
 
-  const getCurrentCurrency = () => {
-    return currencies.find((curr) => curr.code === currency) || currencies[0];
-  };
+ 
 
   return (
-    <div className={darkMode ? "dark-mode" : "light-mode"}>
-      <Head>
+    <div className={ "dark-mode "  }>
+      {/* <Head>
         <title>{t("pageTitle")}</title>
         <meta name="description" content={t("pageDescription")} />
-      </Head>
+      </Head> */}
 
       <nav
         className={`navbar navbar-expand ${
-          darkMode ? "navbar-dark" : "navbar-light"
+          darkMode ? "navbar-dark" : ""
         } sticky-top shadow-sm`}
         style={{
-          background: darkMode
-            ? "linear-gradient(135deg, #252018 0%, #3d3128 100%)"
-            : "linear-gradient(135deg, #f9f6f3 0%, #e8d5c0 100%)",
+          // background:  
+            //  "linear-gradient(135deg, #252018 0%, #3d3128 100%)"
+ 
           padding: "12px 0",
         }}
       >
         <div className="container py-1">
           <a className="navbar-brand d-flex align-items-center" href="#">
-            <i
-              className="fas fa-utensils me-2"
-              style={{
-                color: "linear-gradient(45deg, #b87333, #8c5425)",
-                fontSize: "1.5rem",
-              }}
-            ></i>
+ 
             <span
               className="fw-bold"
               style={{
@@ -297,37 +166,23 @@ if(status){
                 letterSpacing: "0.5px",
               }}
             >
-              UR
+              <Image src={logo} height={50} width={50}/>
             </span>
           </a>
 
           <div className="ms-auto d-flex align-items-center gap-2">
-            {/* ✅ TABLE NUMBER INDICATOR */}
-            {tableNumber && (
-              <div className="table-indicator">
-                <i className="fas fa-chair"></i>
-                <span>Table {tableNumber}</span>
-                <button
-                  className="clear-table-btn"
-                  onClick={handleClearCart}
-                  title="Clear cart and change table"
-                >
-                  <i className="fas fa-times"></i>
-                </button>
-              </div>
-            )}
+
 
             {/* Language Selector */}
             <div className="position-relative">
               <button
                 className="language-selector btn btn-sm d-flex align-items-center gap-2"
                 style={{
-                  backgroundColor: darkMode
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : "rgba(0, 0, 0, 0.05)",
-                  border: darkMode
-                    ? "1px solid rgba(255, 255, 255, 0.2)"
-                    : "1px solid rgba(0, 0, 0, 0.1)",
+                  backgroundColor: 
+                    "#f44336",
+              
+                  border:  "1px solid rgba(255, 255, 255, 0.2)",
+               
                   color: "var(--text-color)",
                   borderRadius: "20px",
                   padding: "8px 16px",
@@ -338,7 +193,7 @@ if(status){
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowLanguageDropdown(!showLanguageDropdown);
-                  setShowCurrencyDropdown(false);
+     
                 }}
               >
                 <span style={{ fontSize: "1.2rem" }}>
@@ -362,8 +217,8 @@ if(status){
                   style={{
                     minWidth: "220px",
                     [language === "ar" ? "left" : "right"]: 0,
-                    backgroundColor: darkMode ? "#2a2a2a" : "white",
-                    border: darkMode ? "1px solid #444" : "1px solid #ddd",
+                    backgroundColor:   "#2a2a2a" ,
+                    border:   "1px solid #f44336"  ,
                     padding: "0.5rem",
                     animation: "fadeSlideIn 0.3s ease",
                     transformOrigin:
@@ -386,9 +241,8 @@ if(status){
                         cursor: "pointer",
                         backgroundColor:
                           language === lang.code
-                            ? darkMode
-                              ? "rgba(255, 126, 95, 0.2)"
-                              : "rgba(255, 107, 107, 0.1)"
+                            ?   "#f44336"
+                             
                             : "transparent",
                       }}
                     >
@@ -401,96 +255,48 @@ if(status){
             </div>
 
             {/* Currency Selector */}
-            <div className="position-relative">
-              <button
+        <div className="position-relative">
+              <Link
                 className="currency-selector btn btn-sm d-flex align-items-center gap-2"
                 style={{
-                  backgroundColor: darkMode
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : "rgba(0, 0, 0, 0.05)",
-                  border: darkMode
-                    ? "1px solid rgba(255, 255, 255, 0.2)"
-                    : "1px solid rgba(0, 0, 0, 0.1)",
-                  color: darkMode ? "#ffffff" : "#333333",
+                  backgroundColor: "#f44336",
+                  border:  "1px solid rgba(255, 255, 255, 0.2)",
+                   
+                  color: darkMode ? "#333333" : "#333333",
                   borderRadius: "20px",
                   padding: "8px 16px",
                   transition: "all 0.3s ease",
                   boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
                   height: "40px",
                 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowCurrencyDropdown(!showCurrencyDropdown);
-                  setShowLanguageDropdown(false);
-                }}
+    
+      href = "/reviewpage"  
+                   
+          
               >
-                <span style={{ fontSize: "1rem" }}>
-                  {getCurrentCurrency()?.symbol}
-                </span>
-                <span
-                  className="d-none d-md-inline"
-                  style={{ fontWeight: "500" }}
-                >
-                  {getCurrentCurrency()?.code}
-                </span>
-                <i
-                  className="fas fa-chevron-down ms-1"
-                  style={{ fontSize: "0.7rem" }}
-                ></i>
-              </button>
+           {t("review")}
+              </Link>
 
-              {showCurrencyDropdown && (
-                <div
-                  className="currency-dropdown position-absolute mt-2 shadow-lg rounded-3 z-1 custom-dropdown"
-                  style={{
-                    minWidth: "220px",
-                    [language === "ar" ? "left" : "right"]: 0,
-                    backgroundColor: darkMode ? "#2a2a2a" : "white",
-                    border: darkMode ? "1px solid #444" : "1px solid #ddd",
-                    padding: "0.5rem",
-                  }}
-                >
-                  {currencies.map((curr) => (
-                    <div
-                      key={curr.code}
-                      className={`dropdown-item-custom d-flex align-items-center gap-2 mb-1 ${
-                        currency === curr.code ? "active" : ""
-                      }`}
-                      onClick={() => {
-                        setCurrency(curr.code);
-                        setShowCurrencyDropdown(false);
-                      }}
-                      style={{
-                        padding: "10px 12px",
-                        borderRadius: "10px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <span>{curr.symbol}</span>
-                      <span>{curr.code}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+ 
             </div>
 
             {/* Dark Mode Toggle */}
             <button
               className="btn btn-sm rounded-circle d-flex align-items-center justify-content-center"
-              onClick={toggleDarkMode}
+              onClick={()=>{
+
+              }}
               style={{
                 width: "38px",
                 height: "38px",
-                backgroundColor: darkMode
-                  ? "rgba(255, 255, 255, 0.1)"
-                  : "rgba(0, 0, 0, 0.05)",
+                backgroundColor:  "#f44336"
+                  
               }}
             >
-              {darkMode ? (
-                <i className="fas fa-sun" style={{ color: "#ff7e5f" }}></i>
-              ) : (
-                <i className="fas fa-moon"></i>
-              )}
+                 {/* <span className="">{language=="ar"?"شائع":"Common"}</span> */}
+        < FaStar size={24} onClick={()=>setshowReviewsModal(true)} color={
+            "#2a2a2a"
+          }/>
             </button>
           </div>
         </div>
@@ -524,6 +330,7 @@ if(status){
             activeCategory={activeCategory}
             setActiveCategory={setActiveCategory}
             t={t}
+            language={language}
             darkMode={darkMode}
           />
 
@@ -540,8 +347,9 @@ if(status){
                     currencySymbol={getCurrencySymbol()}
                     convertPrice={convertPrice}
                     t={t}
+                    language={language}
                     darkMode={darkMode}
-                    onAddToCart={handleAddToCart}
+             
                   />
                 </div>
               ))}
@@ -557,108 +365,76 @@ if(status){
           )}
         </div>
       </main>
-
-      {/* Cart Components */}
-      <CartDrawer
-        cartItems={OrderItems}
-        currencySymbol={getCurrencySymbol()}
-        convertPrice={convertPrice}
-        t={t}
-        isOpen={cartDrawerOpen}
-        onClose={() => setCartDrawerOpen(false)}
-        onUpdateQuantity={async(id, quantity) => {
-          console.log(id,quantity);
-          setLoading(true)
-          await dispatch(PutOrderItemsAction(id,{quantity:quantity}))
-          setLoading(false)
-        }}
-        onRemoveItem={async(id) => {
-          // const newCart = OrderItems.filter((item) => item.id !== id);
-          setLoading(true)
-          await   dispatch(DeleteOrderItemsAction(id));
-          setLoading(false)
-
-          // setCart(newCart);
-          // If cart becomes empty, clear table
-          // if (newCart.length === 0) {
-          //   setTableNumber(null);
-          //   localStorage.removeItem("tableNumber");
-          // }
-        }}
-        onCheckout={handleCheckoutClick}
-        darkMode={darkMode}
-        tableNumber={tableNumber}
-      />
-
-      <CartFloatingButton
-        itemCount={OrderItems.reduce((sum, item) => sum + item.quantity, 0)}
-        onClick={() => setCartDrawerOpen(true)}
-        darkMode={darkMode}
-      />
-
-      <CartNotification
-        item={lastAddedItem}
-        isVisible={showMiniCart}
-        onHide={() => setShowMiniCart(false)}
-        currencySymbol={getCurrencySymbol()}
-        convertPrice={convertPrice}
-        t={t}
-        darkMode={darkMode}
-      />
-
-      {/* ✅ TABLE SELECTION MODAL */}
-      {showTableModal && (
-        <div className="modal-overlay" onClick={() => setShowTableModal(false)}>
-          <div className="table-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+ 
+    
+              {showReviewsModal && (
+        <div className="modal-overlay dark-mode" onClick={() => setshowReviewsModal(false)}>
+          <div className="reviews-modal "     style={{
+          background: darkMode
+            ? "linear-gradient(135deg, #252018 0%, #3d3128 100%)"
+            : "linear-gradient(135deg, #f9f6f3 0%, #e8d5c0 100%)",
+        }} onClick={(e) => e.stopPropagation()} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+            <div className="reviews-modal-header">
               <h2>
-                <i className="fas fa-chair me-2"></i>
-                Select Table Number
+                <i className="fas fa-star"></i>
+                {language === 'ar' ? 'الآكثر شيوعا' : 'The most common'}
               </h2>
-              <button
-                className="close-modal"
-                onClick={() => setShowTableModal(false)}
-              >
+              <button className="close-icon-btn" onClick={() => setshowReviewsModal(false)}>
                 <i className="fas fa-times"></i>
               </button>
             </div>
-
-            <div className="modal-body">
-              <p className="text-muted mb-3">
-                Please enter your table number to continue with your order
-              </p>
-              <div className="form-group">
-                <input
-                  type="text"
-                  className="form-control table-input"
-                  placeholder="Enter table number (e.g., 5, A3, etc.)"
-                  value={inputTableNumber}
-                  onChange={(e) => setInputTableNumber(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      handleTableConfirm();
-                    }
-                  }}
-                  autoFocus
-                />
-              </div>
-            </div>
-
-            <div className="modal-footer">
-              <button
-                className="btn-cancel"
-                onClick={() => setShowTableModal(false)}
-              >
-                Cancel
-              </button>
-              <button className="btn-confirm" onClick={handleTableConfirm}>
-                <i className="fas fa-check me-2"></i>
-                Confirm
-              </button>
+            
+            <div className="reviews-modal-content">
+              <div className= "d-flex  button-modal">
+            <button onClick={
+            ()=>  getFilteredProductsByButton("suggest")
+            }>
+              <h1>{t("restorantOPtions")}</h1>
+               
+           
+                <span className={buttonSelection!=="suggest"?"":"modal-button-animation"}></span>
+            </button>
+            <button onClick={
+            ()=>  getFilteredProductsByButton("common")
+            }>
+              <h1>
+                {t("common")}
+              </h1>
+                <span className={buttonSelection!=="common"?"":"modal-button-animation"}></span>
+            </button>
+          
+                </div>
+              {
+            
+            
+                <div className={darkMode ? "dark-mode reviews-list" : "light-mode reviews-list" } >
+                
+                  {filtershow.filter(e=>e.bestseller==true).map((item, index) => {
+                    console.log();
+                            return  <div
+                  key={item.id}
+                  className="menu-item"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <MenuItemCard
+                    item={item}
+                    currencySymbol={getCurrencySymbol()}
+                    convertPrice={convertPrice}
+                    t={t}
+                    language={language}
+                    darkMode={darkMode}
+             
+                  />
+                </div>
+})}
+                </div>
+              
+            }
             </div>
           </div>
         </div>
       )}
+ 
     </div>
   );
 }

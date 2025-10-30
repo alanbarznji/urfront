@@ -5,7 +5,8 @@ export function useCurrencyConverter(currency) {
     EUR: 0.85,
     GBP: 0.75,
     JPY: 110.5,
-    AED: 3.67
+    AED: 3.67,
+    IQD: 1460,
   };
   
   // Currency symbols
@@ -14,7 +15,8 @@ export function useCurrencyConverter(currency) {
     EUR: '€',
     GBP: '£',
     JPY: '¥',
-    AED: 'د.إ'
+    AED: 'د.إ',
+    IQD: 'ع.د',
   };
   
   // Convert price based on selected currency

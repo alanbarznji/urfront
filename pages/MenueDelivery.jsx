@@ -256,6 +256,7 @@ export default function MenueDelivery() {
 
     const storedLanguage = localStorage.getItem("language");
     if (storedLanguage) {
+      console.log(storedLanguage,"------------");
       setLanguage(storedLanguage);
     } else {
       setShowLanguageModal(true);
@@ -295,10 +296,10 @@ export default function MenueDelivery() {
 
   return (
     <div className={darkMode ? "dark-mode" : "light-mode"}>
-      <Head>
+      {/* <Head>
         <title>{t("pageTitle")} - Delivery</title>
         <meta name="description" content={t("pageDescription")} />
-      </Head>
+      </Head> */}
 
       <nav
         className={`navbar navbar-expand ${
@@ -351,9 +352,9 @@ export default function MenueDelivery() {
             )}
 
             {/* Language & Currency Selectors */}
-            <div className="position-relative">
+       <div className="position-relative">
               <button
-                className="language-selector btn btn-sm d-flex align-items-center gap-2"
+                className="currency-selector btn btn-sm d-flex align-items-center gap-2"
                 style={{
                   backgroundColor: darkMode
                     ? "rgba(255, 255, 255, 0.1)"
@@ -361,43 +362,21 @@ export default function MenueDelivery() {
                   border: darkMode
                     ? "1px solid rgba(255, 255, 255, 0.2)"
                     : "1px solid rgba(0, 0, 0, 0.1)",
-                  color: "var(--text-color)",
+                  color: darkMode ? "#ffffff" : "#333333",
                   borderRadius: "20px",
                   padding: "8px 16px",
+                  transition: "all 0.3s ease",
+                  boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
                   height: "40px",
                 }}
                 onClick={(e) => {
-                  e.stopPropagation();
-                  setShowLanguageDropdown(!showLanguageDropdown);
-                  setShowCurrencyDropdown(false);
+                  
                 }}
               >
-                <span style={{ fontSize: "1.2rem" }}>
-                  {getCurrentLanguage()?.flag}
-                </span>
-                <span className="d-none d-md-inline">
-                  {getCurrentLanguage()?.name}
-                </span>
-                <i className="fas fa-chevron-down ms-1"></i>
+           {t("review")}
               </button>
 
-              {showLanguageDropdown && (
-                <div className="language-dropdown position-absolute mt-2 shadow-lg rounded-3 z-1 custom-dropdown">
-                  {languages.map((lang) => (
-                    <div
-                      key={lang.code}
-                      className="dropdown-item-custom d-flex align-items-center gap-2 mb-1"
-                      onClick={() => {
-                        setLanguage(lang.code);
-                        setShowLanguageDropdown(false);
-                      }}
-                    >
-                      <span>{lang.flag}</span>
-                      <span>{lang.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+ 
             </div>
 
             <button
@@ -449,6 +428,7 @@ export default function MenueDelivery() {
             activeCategory={activeCategory}
             setActiveCategory={setActiveCategory}
             t={t}
+            language={language}
             darkMode={darkMode}
           />
 
@@ -466,6 +446,7 @@ export default function MenueDelivery() {
                     convertPrice={convertPrice}
                     t={t}
                     darkMode={darkMode}
+                    language={language}
                     onAddToCart={handleAddToCart}
                   />
                 </div>

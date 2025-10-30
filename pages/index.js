@@ -1,5 +1,5 @@
-import AdminDashboard from "@/pages/AdminDashboard";
-import LoginPage from "./MenuePage";
+import AdminDashboard from "@/pages/admindashboard";
+import LoginPage from "./menuepage";
 import { useRouter } from "next/router";
 import WelcomePage from "./welcome";
 import { Provider } from "react-redux";

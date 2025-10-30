@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: " http://localhost:4000/api/v1",
+  baseURL: " http://192.168.100.172:4000/api/v1",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -30,7 +30,7 @@ export const GetOrderItemsAction = (queryString = "") => {
     try {
       console.log("get order items action");
       const url = queryString
-        ? `/orderitems?${queryString}`
+        ? `/orderitems`
         : `/order/table/${localStorage.getItem("orderId")}`;
       const res = await API.get(url);
       // list endpoint returns { results, paginationResult, data: [...] }

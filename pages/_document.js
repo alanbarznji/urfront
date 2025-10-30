@@ -4,7 +4,9 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
+    <title>urcaffe</title>
       <body className="antialiased">
+        
         <Main />
         <NextScript />
       </body>

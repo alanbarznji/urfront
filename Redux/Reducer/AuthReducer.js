@@ -16,15 +16,24 @@ const AuthReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         errState: false,
-        Place:  action.payload, // Adjust based on your needs
+        status: 200,
+        Place: action.payload, // Adjust based on your needs
       };
     case "CheckAction":
       return {
         ...state,
         loading: false,
         errState: false,
-        token:true,
-        status:200
+        token: true,
+        status: 200,
+      };
+    case "LoginAction":
+      return {
+        ...state,
+        loading: false,
+        errState: false,
+        token: true,
+        status: 200,
       };
 
     case "PlaceDelete":
@@ -32,7 +41,7 @@ const AuthReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         errState: false,
-        Place:  action.payload, // Adjust based on your needs
+        Place: action.payload, // Adjust based on your needs
       };
 
     case "PlaceGet":
@@ -57,6 +66,7 @@ const AuthReducer = (state = initialState, action) => {
         loading: false,
         errState: true,
         error: action.err,
+        status: 400,
       };
 
     default:

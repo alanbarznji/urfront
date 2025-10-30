@@ -12,7 +12,7 @@ export default function WelcomePage() {
     // Simulate loading
     const timer = setTimeout(() => {
       setLoading(false);
-      setTimeout(() => setShowContent(true), 300);
+      setTimeout(() => handleSelection("menuepage"), 300);
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -187,7 +187,7 @@ export default function WelcomePage() {
           <div className="options-container">
             <div 
               className={`option-card delivery ${selectedOption === 'delivery' ? 'selected' : ''}`}
-              onClick={() => handleSelection('MenuePage')}
+              onClick={() => handleSelection('menuepage')}
             >
               <div className="option-icon-wrapper">
                 <div className="icon-circle">
@@ -212,7 +212,7 @@ export default function WelcomePage() {
 
             <div 
               className={`option-card dine-in ${selectedOption === 'dine-in' ? 'selected' : ''}`}
-              onClick={() => handleSelection('AdminDashboard')}
+              onClick={() => handleSelection('admindashboard')}
             >
               <div className="option-icon-wrapper">
                 <div className="icon-circle">

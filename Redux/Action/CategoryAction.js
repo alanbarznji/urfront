@@ -106,31 +106,19 @@ export const GetOneCategoryAction = (id) => {
 };
 
 // ===== CREATE =====
-export const InsertCategoryAction = ({
+export const InsertCategoryAction = (
     name,
-    email,
-  
- 
-    rating,
-    title,
-    Category,
-    tripType,
-    driverName,
-    recommendToFriend,
- 
-}) => {
+    icon,
+    namear
+) => {
   return async (dispatch) => {
     dispatch({ type: "CategoryReqStart" });
     try {
+      console.log(name,icon,"name,icon");
       await API.post(`/category`, {
         name,
-        email,
-        rating,
-        title,
-        Category,
-        tripType,
-        driverName,
-        recommendToFriend,
+        icon,
+        namear
       });
       // your reducer expects list in payload, and delete returns 204 with no body,
       // so we standardize by refreshing the list after mutations:

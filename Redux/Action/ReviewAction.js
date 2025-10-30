@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: " http://192.168.100.172:3000/api/v1",
+  baseURL: " http://localhost:4000/api/v1",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -23,16 +23,17 @@ const getStatus = (e) =>
  */
 
 // ===== GET (all) =====
-export const GetOfferAction = (queryString = "") => {
+export const GetReviewAction = (queryString  ) => {
   // queryString can be "", or something like "page=1&limit=20&keyword=knife"
   return async (dispatch) => {
-    dispatch({ type: "OfferReqStart" });
+    // dispatch({ type: "ReviewReqStart" });÷
     try {
-      const url = queryString ? `/offer?${queryString}` : `/offer`;
-      const res = await API.get(url );
+      const url = queryString ? `/review?${queryString}` : `/review`;
+      const res = await API.get(url);
+      
       // list endpoint returns { results, paginationResult, data: [...] }
       dispatch({
-        type: "OfferGet",
+        type: "ReviewGet",
         payload: res.data?.data || [],
         status: res.status,
       });
@@ -41,17 +42,25 @@ export const GetOfferAction = (queryString = "") => {
     }
   };
 };
-export const GetOfferFieldsAction = (queryString = "") => {
+export const GetReviewOneAction = (From,To) => {
   // queryString can be "", or something like "page=1&limit=20&keyword=knife"
-  return async (dispatch) => {
-    dispatch({ type: "OfferReqStart" });
+  return async (dispatch) => { 
     try {
-      const url = queryString ? `/offer?${queryString}` : `/offer`;
-      const res = await API.get(url );
+      const url =   `/review/review`  ;
+      const res = await API.post(
+        url,
+        { From, To },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          },
+        }
+      );
       // list endpoint returns { results, paginationResult, data: [...] }
       dispatch({
-        type: "OfferGet",
-        payload: res.data?.data || [],
+        type: "ReviewGet",
+        payload: res.data || [],
         status: res.status,
       });
     } catch (error) {
@@ -61,14 +70,14 @@ export const GetOfferFieldsAction = (queryString = "") => {
 };
 
 // ===== GET (search) =====
-export const GetOfferSearchAction = (search) => {
+export const GetReviewSearchAction = (search) => {
   // `search` is already a query string built by the caller, e.g. "keyword=steel&Active=true"
   return async (dispatch) => {
-    dispatch({ type: "OfferReqStart" });
+    dispatch({ type: "ReviewReqStart" });
     try {
-      const res = await API.get(`/offer?${search}`);
+      const res = await API.get(`/review?${search}`);
       dispatch({
-        type: "OfferGet",
+        type: "ReviewGet",
         payload: res.data?.data || [],
         status: res.status,
       });
@@ -79,14 +88,14 @@ export const GetOfferSearchAction = (search) => {
 };
 
 // ===== GET (one) =====
-export const GetOneOfferAction = (id) => {
+export const GetOneReviewAction = (id) => {
   return async (dispatch) => {
-    dispatch({ type: "OfferReqStart" });
+    dispatch({ type: "ReviewReqStart" });
     try {
-      const res = await API.get(`/offer/${id}`);
+      const res = await API.get(`/review/${id}`);
       // single endpoint returns { data: {...} }
       dispatch({
-        type: "OfferGetOne",
+        type: "ReviewGetOne",
         payload: res.data?.data || null,
         status: res.status,
       });
@@ -97,38 +106,36 @@ export const GetOneOfferAction = (id) => {
 };
 
 // ===== CREATE =====
-export const InsertOfferAction = ({
-  Name,
-  Description,
-  price,
-  Active = false,
-  ExpireDate = "",
-}) => {
+export const InsertReviewAction = (
+  customerService,
+  foodTaste,
+  ratingambience,
+  cleanliness,
+  newDishes,
+  favoriteThings,
+  recommend,
+  suggestions,
+  atmosphere
+) => {
   return async (dispatch) => {
-    dispatch({ type: "OfferReqStart" });
+    dispatch({ type: "ReviewReqStart" });
     try {
-      await API.post(
-        `/offer`,
-        {
-          Name,
-          Description,
-          price,
-          Active,
-          ExpireDate,
-        },
-
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
-          },
-        }
-      );
+      await API.post(`/review`, {
+        customerService,
+        foodTaste,
+        ratingambience,
+        cleanliness,
+        newDishes,
+        favoriteThings,
+        recommend,
+        suggestions,
+        atmosphere,
+      });
       // your reducer expects list in payload, and delete returns 204 with no body,
       // so we standardize by refreshing the list after mutations:
-      const list = await API.get(`/offer`);
+      const list = await API.get(`/review`);
       dispatch({
-        type: "OfferInsert",
+        type: "ReviewInsert",
         payload: list.data?.data || [],
         status: list.status,
       });
@@ -139,20 +146,20 @@ export const InsertOfferAction = ({
 };
 
 // ===== UPDATE =====
-export const PutOfferAction = (id, changes) => {
+export const PutReviewAction = (id, changes) => {
   // changes: any subset of { Name, Description, price, Active, ExpireDate }
   return async (dispatch) => {
-    dispatch({ type: "OfferReqStart" });
+    dispatch({ type: "ReviewReqStart" });
     try {
-      await API.put(`/offer/${id}`, changes, {
+      await API.put(`/review/${id}`, changes, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("Token")}`,
         },
       });
-      const list = await API.get(`/offer`);
+      const list = await API.get(`/review`);
       dispatch({
-        type: "OfferPut",
+        type: "ReviewPut",
         payload: list.data?.data || [],
         status: list.status,
       });
@@ -163,19 +170,19 @@ export const PutOfferAction = (id, changes) => {
 };
 
 // ===== DELETE =====
-export const DeleteOfferAction = (id) => {
+export const DeleteReviewAction = (id) => {
   return async (dispatch) => {
-    dispatch({ type: "OfferReqStart" });
+    dispatch({ type: "ReviewReqStart" });
     try {
-      await API.delete(`/offer/${id}`, {
+      await API.delete(`/review/${id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("Token")}`,
         },
       }); // backend sends 204 with no body
-      const list = await API.get(`/offer`);
+      const list = await API.get(`/review`);
       dispatch({
-        type: "OfferDelete",
+        type: "ReviewDelete",
         payload: list.data?.data || [],
         status: list.status,
       });

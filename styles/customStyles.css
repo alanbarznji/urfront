@@ -2,21 +2,20 @@
 
 /* ===== Variables ===== */
 /* Bronze Color Scheme Variables - Add to the top of customStyles.css */
-
+@import url('https://fonts.googleapis.com/css2?family=Lemonada:wght@300..700&family=Readex+Pro:wght@160..700&display=swap');
 :root {
-  /* Main colors - Bronze/Copper theme */
-  --primary: #b87333;
-  --primary-light: #d4a76a;
-  --primary-dark: #8c5425;
-  --secondary: #4a3c30;
-  --secondary-light: #7d6852;
-  
-  /* Accent colors */
-  --accent: #e8c39e;
-  --accent-light: #f0dbc0;
+ 
+    --primary: #f44336;
+    --primary-light: #e57373;
+    --primary-dark: #d32f2f;
+    --secondary: #c62828;
+    --secondary-light: #ef5350;
+
+    --accent: #ffcdd2;
+    --accent-light: #ffebee;
   
   /* UI colors */
-  --dark: #2d2522;
+  --dark: #0f0f0f0f;
   --light: #f9f6f3;
   --gray: #8a7968;
   --success: #789d7c;
@@ -36,21 +35,25 @@
   --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
   --hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
-  --font-family: 'Poppins', sans-serif;
+  --font-family: "Readex Pro",
+    sans-serif;
+      /* font-optical-sizing: auto;
+      font-weight: <weight>;
+      font-style: normal; */
 }
 
 /* Light/Dark Theme with Bronze colors */
-.light-mode {
-  --bg-color: #f9f6f3;
+/* .light-mode {
+  --bg-color: #0f0f0f0f;
   --card-bg: #ffffff;
   --text-color: #3a2e24;
   --border-color: #e6ded4;
   --muted-color: #8a7968;
-}
+} */
 
 .dark-mode {
-  --bg-color: #252018;
-  --card-bg: #2d2522;
+  --bg-color: #0f0f0f;
+  --card-bg: #383838;
   --text-color: #e8d5c0;
   --border-color: #3d3128;
   --muted-color: #a89783;
@@ -535,11 +538,11 @@ body {
 
 /* ===== Dark Mode Navbar ===== */
 .dark-mode .navbar {
-  background-color: var(--card-bg) !important;
+  background-color: #383838 !important;
 }
 
 .dark-mode .dropdown-menu {
-  background-color: var(--card-bg);
+  background-color: #383838;
   border-color: var(--border-color);
 }
 

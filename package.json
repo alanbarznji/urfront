@@ -6,9 +6,11 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview:export": "serve out -l 5000"
   },
   "dependencies": {
+    "@fontsource/poppins": "^5.2.7",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.6",
@@ -16,8 +18,10 @@
     "framer-motion": "^12.11.4",
     "lucide-react": "^0.544.0",
     "next": "15.3.2",
+    "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.3",
     "redux": "^5.0.1",

@@ -106,21 +106,18 @@ export const GetOneProductAction = (id) => {
 };
 
 // ===== CREATE =====
-export const InsertProductAction = (
-Place,
-
-) => {
+export const InsertProductAction = (formData) => {
   return async (dispatch) => {
- 
+    // console.log(data.get("image"), "data in action");
     try {
       await API.post(
         `/product`,
-        {
-          Place,
-        },
+
+        formData,
+
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("Token")}`,
           },
         }
@@ -140,14 +137,14 @@ Place,
 };
 
 // ===== UPDATE =====
-export const PutProductAction = (id, changes) => {
+export const PutProductAction = (id, formData) => {
   // changes: any subset of { Name, Description, price, Active, ExpireDate }
   return async (dispatch) => {
     dispatch({ type: "ProductReqStart" });
     try {
-      await API.put(`/product/${id}`, changes, {
+      await API.put(`/product/${id}`, formData, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("Token")}`,
         },
       });
@@ -177,6 +174,29 @@ export const DeleteProductAction = (id) => {
       const list = await API.get(`/product`);
       dispatch({
         type: "PlaceDelete",
+        payload: list.data?.data || [],
+        status: list.status,
+      });
+    } catch (error) {
+      dispatch({ type: "err", err: getErr(error), status: getStatus(error) });
+    }
+  };
+};
+export const LoveProductAction = (id,formData) => {
+  return async (dispatch) => {
+
+    dispatch({ type: "PlaceReqStart" });
+    try {
+      console.log("dakoda");
+      await API.put(`/product/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+        },
+      });// backend sends 204 with no body
+      const list = await API.get(`/product`);
+      dispatch({
+        type: "ProductPut",
         payload: list.data?.data || [],
         status: list.status,
       });

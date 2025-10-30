@@ -1,8 +1,9 @@
 // Enhanced CategorySlider Component with improved styling
 import React from 'react';
 
-export default function CategorySlider({ categories, activeCategory, setActiveCategory, t, darkMode }) {
+export default function CategorySlider({ categories, activeCategory, setActiveCategory, t,language }) {
   // Category icons mapping
+  console.log(language,"language");
   const categoryIcons = {
     all: "fa-th-large",
     burgers: "fa-hamburger",
@@ -14,32 +15,36 @@ export default function CategorySlider({ categories, activeCategory, setActiveCa
     sides: "fa-french-fries",
     mains: "fa-utensils"
   };
-console.log(categories,">>>>>>>>>>");
+ 
   return (
     <div className="category-slider-container">
       <div className="category-slider-wrapper">
         <div className="d-flex overflow-auto py-2 hide-scrollbar">
-          {categories?.map((category, index) => (
-            <div 
-              key={index} 
-              className="category-item"
-            >
+          {categories?.map((category, index) => {
+ 
+          return (
+            <div key={index} className="category-item">
               <button
-                className={`category-btn-new ${activeCategory === category.name ? 'active' : ''}`}
+                className={`category-btn-new ${
+                  activeCategory === category.name ? "active" : ""
+                }`}
                 onClick={() => {
-                  console.log(category.name);
-                  setActiveCategory(category.name)}}
+                  setActiveCategory(category.name);
+                }}
                 aria-label={`Filter by ${t(` ${category.name}`) || category}`}
               >
                 <div className="category-btn-content">
                   <div className="category-icon-wrapper">
-                    <i className={`fas ${categoryIcons[category.name] || 'fa-utensils'}`}></i>
+                    <i className={`fas ${category.icon ?? "fa-th-large"}`}></i>
                   </div>
-                  <span className="category-name">{t(`${category.name}`) || category}</span>
+                  <span className="category-name">{`${
+                    language == "ar" ? category.namear : category.name
+                  }`}</span>
                 </div>
               </button>
             </div>
-          ))}
+          );
+})}
         </div>
       </div>
     </div>
