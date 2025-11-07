@@ -38,44 +38,40 @@ const dispatch=useDispatch()
     }
   };
 
-  const createFloatingHearts = (id,count) => {
+  const createFloatingHearts = (id, count) => {
     const formData = new FormData();
-    formData.append("countLike", count+1);
-    console.log("dakodass");
+    formData.append("countLike", count + 1);
     dispatch(LoveProductAction(id, formData));
+
+    // Only run floating hearts animation in browser environment
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
     const heartsCount = 10;
-    
+
     for (let i = 0; i < heartsCount; i++) {
       setTimeout(() => {
-        const heart =document.createElement("div");
-        heart.className = "floating-heart";
-        heart.innerHTML = "❤️";
-        const randomX=Math.random()*window.innerWidth;
-        const randomY=window.innerHeight;
-        heart.style.left=randomX+"px";
-        heart.style.top=randomY+"px";   
-        document.body.appendChild(heart);
-        setTimeout(() => {
-          heart.remove();
-        }, 500);
+        try {
+          const heart = document.createElement("div");
+          heart.className = "floating-heart";
+          heart.innerHTML = "❤️";
+          const randomX = Math.random() * window.innerWidth;
+          const randomY = window.innerHeight;
+          heart.style.left = randomX + "px";
+          heart.style.top = randomY + "px";
 
-      },i*100)
-      // setTimeout(() => {
-      //   const heart = document.createElement("div");
-      //   heart.className = "floating-heart";
-      //   heart.innerHTML = "❤️";
-
-      //   const randomX = Math.random() * window.innerWidth;
-      //   const randomY = window.innerHeight;
-
-      //   heart.style.left = randomX + "px";
-      //   heart.style.top = randomY + "px";
-      //   document.body.appendChild(heart);
-
-      //   setTimeout(() => {
-      //     heart.remove();
-      //   }, 500);
-      // }, i * 100);
+          // Safely append to document
+          if (document.body) {
+            document.body.appendChild(heart);
+            setTimeout(() => {
+              heart.remove();
+            }, 500);
+          }
+        } catch (error) {
+          console.error('Error creating floating heart:', error);
+        }
+      }, i * 100);
     }
   };
 
@@ -105,7 +101,7 @@ const dispatch=useDispatch()
             {item.new && <span className="badge badge-new">{t("new")}</span>}
           </div>
 
-          <div className="category-badge">{t(`${item.category.name}`)}</div>
+          <div className="category-badge">{t(`${item.category?.name || 'Unknown'}`)}</div>
 
           <div className="overlay-buttons">
             <button

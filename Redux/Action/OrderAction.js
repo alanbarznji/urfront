@@ -1,7 +1,10 @@
 import axios from "axios";
+import { getLocalStorageItem, setLocalStorageItem, removeLocalStorageItem } from "@/src/utility/localStorage";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://urcompany.cloud/api/v1";
 
 const API = axios.create({
-  baseURL: " https://urcompany.cloud/api/api/v1",
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -94,6 +97,7 @@ export const InsertOrdersAction = (
   return async (dispatch) => {
     try {
  console.log(TableName,"TableName");
+     const token = getLocalStorageItem("Token");
      const res= await API.post(
         `/order`,
         {
@@ -102,17 +106,17 @@ export const InsertOrdersAction = (
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
+            ...(token && { Authorization: `Bearer ${token}` }),
           },
         }
       );
       console.log(res);
-      console.log(res.data.data.id, "ressss2222");
+      console.log(res.data?.data?.id, "ressss2222");
       if(res.status!==201){
         throw new Error("Failed to create order")
    }
 
-  await localStorage.setItem("orderId",res.data.data.id)
+  setLocalStorageItem("orderId", res.data?.data?.id)
       // your reducer expects list in payload, and delete returns 204 with no body,
       // so we standardize by refreshing the list after mutations:
       console.log(res.data,"ressss");
@@ -139,10 +143,11 @@ export const PutOrdersAction = (id, changes) => {
   return async (dispatch) => {
     dispatch({ type: "OrdersReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.put(`/order/${id}`, changes, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
       const list = await API.get(`/order`);
@@ -162,13 +167,14 @@ export const DeleteOrdersAction = (id) => {
   return async (dispatch) => {
     dispatch({ type: "OrdersReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.delete(`/order/${id}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       }); // backend sends 204 with no body
-      localStorage.removeItem("orderId");
+      removeLocalStorageItem("orderId");
       const list = await API.get(`/order`);
       dispatch({
         type: "OrdersDelete",

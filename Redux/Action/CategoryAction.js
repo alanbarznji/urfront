@@ -1,7 +1,10 @@
 import axios from "axios";
+import { getLocalStorageItem, setLocalStorageItem, removeLocalStorageItem } from "@/src/utility/localStorage";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
 const API = axios.create({
-  baseURL: " http://localhost:4000/api/v1",
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -47,13 +50,14 @@ export const GetCategoryOneAction = (From,To) => {
   return async (dispatch) => { 
     try {
       const url =   `/category/category`  ;
+      const token = getLocalStorageItem("Token");
       const res = await API.post(
         url,
         { From, To },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
+            ...(token && { Authorization: `Bearer ${token}` }),
           },
         }
       );
@@ -140,10 +144,11 @@ export const PutCategoryAction = (id, changes) => {
   return async (dispatch) => {
     dispatch({ type: "CategoryReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.put(`/category/${id}`, changes, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
       const list = await API.get(`/category`);
@@ -163,10 +168,11 @@ export const DeleteCategoryAction = (id) => {
   return async (dispatch) => {
     dispatch({ type: "CategoryReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.delete(`/category/${id}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       }); // backend sends 204 with no body
       const list = await API.get(`/category`);

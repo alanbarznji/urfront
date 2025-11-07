@@ -1,7 +1,10 @@
 import axios from "axios";
+import { getLocalStorageItem } from "@/src/utility/localStorage";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
 const API = axios.create({
-  baseURL: " http://192.168.100.172:4000/api/v1",
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -29,9 +32,10 @@ export const GetOrderItemsAction = (queryString = "") => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
       console.log("get order items action");
+      const orderId = getLocalStorageItem("orderId");
       const url = queryString
         ? `/orderitems`
-        : `/order/table/${localStorage.getItem("orderId")}`;
+        : `/order/table/${orderId || ""}`;
       const res = await API.get(url);
       // list endpoint returns { results, paginationResult, data: [...] }
       console.log("gegegegeg");
@@ -113,8 +117,10 @@ export const InsertOrderItemsAction = ( productId ) => {
   return async (dispatch) => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
+      const orderId = getLocalStorageItem("orderId");
+      const token = getLocalStorageItem("Token");
       await API.post(
-        `/orderitems/${localStorage.getItem("orderId")}`,
+        `/orderitems/${orderId || ""}`,
         {
           productId,
           quantity: 1,
@@ -122,7 +128,7 @@ export const InsertOrderItemsAction = ( productId ) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
+            ...(token && { Authorization: `Bearer ${token}` }),
           },
         }
       );
@@ -146,10 +152,11 @@ export const PutOrderItemsAction = (id, changes) => {
   return async (dispatch) => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.put(`/orderitems/${id}`, changes, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
       const list = await API.get(`/orderitems`);
@@ -169,10 +176,11 @@ export const DeleteOrderItemsAction = (id) => {
   return async (dispatch) => {
     dispatch({ type: "OrderItemsReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.delete(`/orderitems/${id}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       }); // backend sends 204 with no body
       const list = await API.get(`/orderitems`);

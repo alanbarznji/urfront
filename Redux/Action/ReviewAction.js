@@ -1,7 +1,10 @@
 import axios from "axios";
+import { getLocalStorageItem, setLocalStorageItem, removeLocalStorageItem } from "@/src/utility/localStorage";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
 const API = axios.create({
-  baseURL: " http://localhost:4000/api/v1",
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -47,13 +50,14 @@ export const GetReviewOneAction = (From,To) => {
   return async (dispatch) => { 
     try {
       const url =   `/review/review`  ;
+      const token = getLocalStorageItem("Token");
       const res = await API.post(
         url,
         { From, To },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
+            ...(token && { Authorization: `Bearer ${token}` }),
           },
         }
       );
@@ -151,10 +155,11 @@ export const PutReviewAction = (id, changes) => {
   return async (dispatch) => {
     dispatch({ type: "ReviewReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.put(`/review/${id}`, changes, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
       const list = await API.get(`/review`);
@@ -174,10 +179,11 @@ export const DeleteReviewAction = (id) => {
   return async (dispatch) => {
     dispatch({ type: "ReviewReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.delete(`/review/${id}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       }); // backend sends 204 with no body
       const list = await API.get(`/review`);

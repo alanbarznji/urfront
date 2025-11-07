@@ -1,11 +1,13 @@
 import axios from "axios";
+import { getLocalStorageItem, setLocalStorageItem } from "@/src/utility/localStorage";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
 export const SignUpAction = (name, password, email) => {
   return async (dispatch) => {
     try {
       const res = await axios.post(
-        " http://localhost:4000/api/v1/auth/signup",
-
+        `${API_BASE_URL}/auth/signup`,
         {
           name: name,
           password: password,
@@ -25,11 +27,11 @@ export const SignUpAction = (name, password, email) => {
         status: res.status,
       });
     } catch (error) {
-      console.log(error, "meme");
+      console.error("SignUp error:", error);
       dispatch({
         type: "err",
-        err: error.response.data,
-        status: error.response.data.error.statuscode,
+        err: error.response?.data || "Unknown error",
+        status: error.response?.data?.error?.statuscode || 500,
       });
     }
   };
@@ -38,7 +40,7 @@ export const LoginAction = (username, password) => {
   return async (dispatch) => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/v1/auth/login",
+        `${API_BASE_URL}/auth/login`,
         {
           username,
           password,
@@ -50,21 +52,25 @@ export const LoginAction = (username, password) => {
         }
       );
 
-      localStorage.setItem("Token", res.data.Token);
-      console.log("dadddd");
-      if (res.status == 201) {
-        window.location = "/admindashboard";
-      } else {
-        window.alert("error");
+      // Safely store token in localStorage
+      if (res.data?.Token) {
+        setLocalStorageItem("Token", res.data.Token);
       }
+
+      if (res.status === 201 || res.status === 200) {
+        // Use Next.js router instead of window.location
+        if (typeof window !== 'undefined') {
+          window.location = "/admindashboard";
+        }
+      }
+
       dispatch({
         type: "LoginAction",
         payload: res.data,
         status: res.status,
       });
     } catch (error) {
-      console.log("Error in cart request:", error);
-window.alert("error")
+      console.error("Login error:", error);
       dispatch({
         type: "err",
         err: error.response?.data || "Unknown error",
@@ -76,17 +82,19 @@ window.alert("error")
 export const CheckAction = () => {
   return async (dispatch) => {
     try {
+      // Safely retrieve token from localStorage
+      const token = getLocalStorageItem("Token");
+
       const res = await axios.post(
-        " http://localhost:4000/api/v1/auth/check",
+        `${API_BASE_URL}/auth/check`,
         {},
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
+            ...(token && { Authorization: `Bearer ${token}` }),
           },
         }
       );
-      console.log("damera");
 
       dispatch({
         type: "CheckAction",
@@ -94,13 +102,17 @@ export const CheckAction = () => {
         status: res.status,
       });
     } catch (error) {
-      console.log("Error in cart request:", error);
-window.location = "/login";
+      console.error("Check auth error:", error);
       dispatch({
         type: "err",
         err: error.response?.data || "Unknown error",
         status: error.response?.data?.error?.statuscode || 500,
       });
+
+      // Redirect to login on auth failure
+      if (typeof window !== 'undefined') {
+        window.location = "/login";
+      }
     }
   };
 };

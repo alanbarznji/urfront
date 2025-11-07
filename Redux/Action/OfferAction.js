@@ -1,7 +1,10 @@
 import axios from "axios";
+import { getLocalStorageItem, setLocalStorageItem, removeLocalStorageItem } from "@/src/utility/localStorage";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
 const API = axios.create({
-  baseURL: " http://192.168.100.172:3000/api/v1",
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -107,6 +110,7 @@ export const InsertOfferAction = ({
   return async (dispatch) => {
     dispatch({ type: "OfferReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.post(
         `/offer`,
         {
@@ -120,7 +124,7 @@ export const InsertOfferAction = ({
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
+            ...(token && { Authorization: `Bearer ${token}` }),
           },
         }
       );
@@ -144,10 +148,11 @@ export const PutOfferAction = (id, changes) => {
   return async (dispatch) => {
     dispatch({ type: "OfferReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.put(`/offer/${id}`, changes, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       });
       const list = await API.get(`/offer`);
@@ -167,10 +172,11 @@ export const DeleteOfferAction = (id) => {
   return async (dispatch) => {
     dispatch({ type: "OfferReqStart" });
     try {
+      const token = getLocalStorageItem("Token");
       await API.delete(`/offer/${id}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
       }); // backend sends 204 with no body
       const list = await API.get(`/offer`);
