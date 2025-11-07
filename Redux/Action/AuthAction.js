@@ -4,7 +4,7 @@ export const SignUpAction = (name, password, email) => {
   return async (dispatch) => {
     try {
       const res = await axios.post(
-        " http://localhost:4000/api/v1/auth/signup",
+        " https://urcompany.cloud/api/api/v1/auth/signup",
 
         {
           name: name,
@@ -38,7 +38,7 @@ export const LoginAction = (username, password) => {
   return async (dispatch) => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/v1/auth/login",
+        "https://urcompany.cloud/api/api/v1/auth/login",
         {
           username,
           password,
@@ -77,7 +77,7 @@ export const CheckAction = () => {
   return async (dispatch) => {
     try {
       const res = await axios.post(
-        " http://localhost:4000/api/v1/auth/check",
+        " https://urcompany.cloud/api/api/v1/auth/check",
         {},
         {
           headers: {

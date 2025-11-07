@@ -1,5 +1,5 @@
 import { LoveProductAction } from "@/Redux/Action/ProductAction";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 export default function MenuItemCard({
@@ -12,73 +12,76 @@ export default function MenuItemCard({
 }) {
   // ✅ Prevent crash if item is undefined (Next.js build protection)
   if (!item || typeof item !== "object") return null;
-  console.log(item, "<<<<<<<");
+ const [data, setData] = useState(
+   JSON.parse(localStorage.getItem("lovedata")) || []
+ );
   const [isFavorite, setIsFavorite] = useState(false);
+  const [Favorite, setFavorite] = useState(localStorage.getItem("lovedata") ||[]);
+  const [Loading, setLoading] = useState(false);
 const dispatch=useDispatch()
-  const getCategoryIcon = (category) => {
-    const categoryIcons = {
-      burgers: "fa-hamburger",
-      sandwiches: "fa-bread-slice",
-      pizzas: "fa-pizza-slice",
-      salads: "fa-leaf",
-      desserts: "fa-ice-cream",
-      drinks: "fa-glass-martini",
-      sides: "fa-french-fries",
-      mains: "fa-utensils",
-    };
-    return categoryIcons[category] || "fa-utensils";
-  };
+  // const getCategoryIcon = (category) => {
+  //   const categoryIcons = {
+  //     burgers: "fa-hamburger",
+  //     sandwiches: "fa-bread-slice",
+  //     pizzas: "fa-pizza-slice",
+  //     salads: "fa-leaf",
+  //     desserts: "fa-ice-cream",
+  //     drinks: "fa-glass-martini",
+  //     sides: "fa-french-fries",
+  //     mains: "fa-utensils",
+  //   };
+  //   return categoryIcons[category] || "fa-utensils";
+  // };
 
-  const toggleFavorite = (id,count) => {
+  const toggleFavorite = (id,count,date) => {
     setIsFavorite(!isFavorite);
 
     // ❤️ Create floating hearts animation
     if (!isFavorite) {
-      createFloatingHearts(id,count);
+      createFloatingHearts(id, count, date);
     }
   };
-
-  const createFloatingHearts = (id,count) => {
+useEffect(() => {
+    const lovedata = JSON.parse(localStorage.getItem("lovedata")) || [];
+    const isLiked = lovedata.filter((love) => love.id === item.id && love.Date + 24 * 60 * 60 * 1000 > Date.now());
+    setFavorite(isLiked);
+}, [Loading]);
+  const createFloatingHearts = (id, count, date) => {
     const formData = new FormData();
-    formData.append("countLike", count+1);
-    console.log("dakodass");
-    dispatch(LoveProductAction(id, formData));
+    formData.append("countLike", count + 1);
+ 
+
+ 
+    console.log(Date.now(), "dateString");
+    setLoading(true);
+    dispatch(LoveProductAction(id, formData, Date.now()));
     const heartsCount = 10;
     
     for (let i = 0; i < heartsCount; i++) {
       setTimeout(() => {
-        const heart =document.createElement("div");
+        const heart = document.createElement("div");
         heart.className = "floating-heart";
         heart.innerHTML = "❤️";
-        const randomX=Math.random()*window.innerWidth;
-        const randomY=window.innerHeight;
-        heart.style.left=randomX+"px";
-        heart.style.top=randomY+"px";   
+        const randomX = Math.random() * window.innerWidth;
+        const randomY = window.innerHeight;
+        heart.style.left = randomX + "px";
+        heart.style.top = randomY + "px";
         document.body.appendChild(heart);
         setTimeout(() => {
           heart.remove();
         }, 500);
-
-      },i*100)
-      // setTimeout(() => {
-      //   const heart = document.createElement("div");
-      //   heart.className = "floating-heart";
-      //   heart.innerHTML = "❤️";
-
-      //   const randomX = Math.random() * window.innerWidth;
-      //   const randomY = window.innerHeight;
-
-      //   heart.style.left = randomX + "px";
-      //   heart.style.top = randomY + "px";
-      //   document.body.appendChild(heart);
-
-      //   setTimeout(() => {
-      //     heart.remove();
-      //   }, 500);
-      // }, i * 100);
+      }, i * 100);
+      setLoading(false);
+ 
     }
   };
-
+useEffect(() => {
+    const lovedata = JSON.parse(localStorage.getItem("lovedata")) || [];
+    const isLiked = lovedata.some((love) => love.id === item.id && love.Date + 24 * 60 * 60 * 1000 > Date.now());
+    setIsFavorite(isLiked);
+}, [Loading]);
+  const a=data.filter((e) =>  e.id===item.id);
+  console.log(a,"a");
   return (
     <div className="menu-item-card">
       <div
@@ -111,11 +114,20 @@ const dispatch=useDispatch()
             <button
               className="action-btn favorite"
               aria-label="Add to favorites"
-              onClick={()=>toggleFavorite(item.id,item.countLike)}
+              onClick={() => {
+                Favorite.length >= 1 &&
+                     Favorite[0].Date + 24 * 60 * 60 * 1000 > Date.now()?window.alert(language=="en"?"You can like this item once every 24 hours":"يمكنك الإعجاب بهذا العنصر مرة واحدة كل 24 ساعة"):
+                toggleFavorite(item.id, item.countLike, item.createdAt);
+                console.log("clicked favorite",Favorite);
+              }}
             >
               <i
                 className={`fa-heart ${
-                  isFavorite ? "fas text-danger  " : "far"
+                  isFavorite ||
+                  (Favorite.length >= 1 &&
+                     Favorite[0].Date + 24 * 60 * 60 * 1000 > Date.now())
+                    ? "fas text-danger  "
+                    : "far"
                 }`}
               ></i>
             </button>

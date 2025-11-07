@@ -1,5 +1,5 @@
 // pages/Components/MenuePage.js - UPDATED WITH TABLE SELECTION
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Head from "next/head";
 import CategorySlider from "./Components/CategorySlider";
 import MenuItemCard from "./Components/MenuItemCard";
@@ -34,12 +34,9 @@ export default function MenuePage() {
  
  
   const product = useSelector((state) => state.Product.Product);
- 
   const Category = useSelector((state) => state.Category.Category);
-
   const languages = [
     { code: "en", name: "English", flag: "🇺🇸" },
- 
     { code: "ar", name: "العربية", flag: "🇸🇦" },
   ];
 
@@ -63,17 +60,30 @@ export default function MenuePage() {
       return false;
     return true;
   });
+  useEffect(() => {
+ if (buttonSelection === "suggest") {
+   setfiltershow(product.filter(item => item.RestorantOption === true))
+  }
+  else if (buttonSelection === "topRated") {
+    setfiltershow(product.sort((a,b) => a.countLike+b.countLike).slice(0,10))
+    console.log(product.sort((a,b) => a.countLike+b.countLike),"filtershow");
+  }
+  else {
+    setfiltershow(product.filter(e=>e.bestseller==true));
+    }
+
+  }, [buttonSelection])
 const getFilteredProductsByButton = (e) => {
   setButtonSelection(e);
- if (buttonSelection === "suggest") {
-   console.log(product.filter(item => item.RestorantOption === false),"product------ ");
-   setfiltershow( product.filter(item => item.RestorantOption === true))
-  } else {
-    console.log(product.length);
-    setfiltershow( product)
-    console.log(product,"product------ ");
-    return product;
-    }
+//  if (buttonSelection === "suggest") {
+//    setfiltershow(product.filter(item => item.RestorantOption === true))
+//   }
+//   else if (buttonSelection === "topRated") {
+//     setfiltershow(product.sort((a,b) => a.countLike-b.countLike))
+//   }
+//   else {
+//     setfiltershow(product.filter(e=>e.bestseller==true));
+//     }
 }
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -159,7 +169,7 @@ const getFilteredProductsByButton = (e) => {
             <span
               className="fw-bold"
               style={{
-                background: "linear-gradient(45deg, #b87333, #8c5425)",
+                background: "linear-gradient(135deg, #252018 0%, #3d3128 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 fontSize: "1.6rem",
@@ -178,8 +188,8 @@ const getFilteredProductsByButton = (e) => {
               <button
                 className="language-selector btn btn-sm d-flex align-items-center gap-2"
                 style={{
-                  backgroundColor: 
-                    "#f44336",
+                  background: 
+                    "linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
               
                   border:  "1px solid rgba(255, 255, 255, 0.2)",
                
@@ -217,8 +227,8 @@ const getFilteredProductsByButton = (e) => {
                   style={{
                     minWidth: "220px",
                     [language === "ar" ? "left" : "right"]: 0,
-                    backgroundColor:   "#2a2a2a" ,
-                    border:   "1px solid #f44336"  ,
+                    background:   "#2a2a2a" ,
+                    border:   "1px solid #linear-gradient(135deg, #f44336 0%, #e91e63 100%)"  ,
                     padding: "0.5rem",
                     animation: "fadeSlideIn 0.3s ease",
                     transformOrigin:
@@ -239,9 +249,9 @@ const getFilteredProductsByButton = (e) => {
                         padding: "10px 12px",
                         borderRadius: "10px",
                         cursor: "pointer",
-                        backgroundColor:
+                        background:
                           language === lang.code
-                            ?   "#f44336"
+                            ?   "linear-gradient(135deg, #f44336 0%, #e91e63 100%)"
                              
                             : "transparent",
                       }}
@@ -259,10 +269,10 @@ const getFilteredProductsByButton = (e) => {
               <Link
                 className="currency-selector btn btn-sm d-flex align-items-center gap-2"
                 style={{
-                  backgroundColor: "#f44336",
+                  background:"linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
                   border:  "1px solid rgba(255, 255, 255, 0.2)",
                    
-                  color: darkMode ? "#333333" : "#333333",
+                  color:"white",
                   borderRadius: "20px",
                   padding: "8px 16px",
                   transition: "all 0.3s ease",
@@ -284,18 +294,17 @@ const getFilteredProductsByButton = (e) => {
             <button
               className="btn btn-sm rounded-circle d-flex align-items-center justify-content-center"
               onClick={()=>{
-
+ setshowReviewsModal(true)
               }}
               style={{
                 width: "38px",
                 height: "38px",
-                backgroundColor:  "#f44336"
-                  
+                background: "linear-gradient(135deg, #f44336 0%, #e91e63 100%)"
               }}
             >
                  {/* <span className="">{language=="ar"?"شائع":"Common"}</span> */}
-        < FaStar size={24} onClick={()=>setshowReviewsModal(true)} color={
-            "#2a2a2a"
+        < FaStar size={24}  color={
+            "white"
           }/>
             </button>
           </div>
@@ -370,9 +379,8 @@ const getFilteredProductsByButton = (e) => {
               {showReviewsModal && (
         <div className="modal-overlay dark-mode" onClick={() => setshowReviewsModal(false)}>
           <div className="reviews-modal "     style={{
-          background: darkMode
-            ? "linear-gradient(135deg, #252018 0%, #3d3128 100%)"
-            : "linear-gradient(135deg, #f9f6f3 0%, #e8d5c0 100%)",
+          background:   "linear-gradient(135deg, #252018 0%, #3d3128 100%)"
+          
         }} onClick={(e) => e.stopPropagation()} dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <div className="reviews-modal-header">
               <h2>
@@ -402,6 +410,14 @@ const getFilteredProductsByButton = (e) => {
               </h1>
                 <span className={buttonSelection!=="common"?"":"modal-button-animation"}></span>
             </button>
+            <button onClick={
+            ()=>  getFilteredProductsByButton("topRated")
+            }>
+              <h1>
+                {t("topRated")}
+              </h1>
+                <span className={buttonSelection!=="topRated"?"":"modal-button-animation"}></span>
+            </button>
           
                 </div>
               {
@@ -409,7 +425,7 @@ const getFilteredProductsByButton = (e) => {
             
                 <div className={darkMode ? "dark-mode reviews-list" : "light-mode reviews-list" } >
                 
-                  {filtershow.filter(e=>e.bestseller==true).map((item, index) => {
+                  {filtershow.map((item, index) => {
                     console.log();
                             return  <div
                   key={item.id}
@@ -431,6 +447,7 @@ const getFilteredProductsByButton = (e) => {
               
             }
             </div>
+            
           </div>
         </div>
       )}

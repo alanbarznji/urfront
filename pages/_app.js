@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }) {
     import("bootstrap/dist/js/bootstrap.bundle.min.js");
   }, []);
 
-  const defaultTitle = "urcaffe";
+  const defaultTitle = "UrResturans";
 
   return (
     <>

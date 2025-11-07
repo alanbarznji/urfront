@@ -130,7 +130,7 @@ const handleAddItem = async () => {
   formdata.append("categoryId", newItem.category);
   formdata.append("image", newItem.imageFile);
   formdata.append("bestseller", newItem.bestseller);
-  formData.append("RestorantOption", newItem.RestorantOption);
+  formdata.append("RestorantOption", newItem.RestorantOption);
 
   await dispatch(InsertProductAction(formdata));
   

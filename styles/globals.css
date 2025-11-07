@@ -1,22 +1,145 @@
 /* styles/globals.css */
+/* Bahijat Font - Extra Light */
+
 @font-face {
+
   font-family: "Bahijat";
-  src: url("/public/font/Bahij_TheSansArabic-Black.ttf") format("woff2");
+
+  src: url("/font/Bahij_TheSansArabic-ExtraLight.ttf") format("truetype");
+
+  font-weight: 200;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Light */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-Light.ttf") format("truetype");
+
+  font-weight: 300;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Semi Light */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-SemiLight.ttf") format("truetype");
+
+  font-weight: 350;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Regular/Plain */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-Plain.ttf") format("truetype");
+
   font-weight: 400;
+
   font-style: normal;
+
   font-display: swap;
+
 }
+
+ 
+
+/* Bahijat Font - Semi Bold */
 
 @font-face {
+
   font-family: "Bahijat";
-  src: url("/public//font/Bahij_TheSansArabic-ExtraBold.ttf") format("woff2");
-  font-weight: 900;
+
+  src: url("/font/Bahij_TheSansArabic-SemiBold.ttf") format("truetype");
+
+  font-weight: 600;
+
   font-style: normal;
+
   font-display: swap;
+
 }
 
+ 
+
+/* Bahijat Font - Bold */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-Bold.ttf") format("truetype");
+
+  font-weight: 700;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Extra Bold */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-ExtraBold.ttf") format("truetype");
+
+  font-weight: 800;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Black */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-Black.ttf") format("truetype");
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
 :root {
-  --primary-color: #f44336;
+  --primary-color: linear-gradient(135deg, #f44336 0%, #e91e63 100%);
   --secondary-color: #2ec4b6;
   --accent-color: #ff9f1c;
   --dark-color: #1a1a1a;
@@ -25,7 +148,7 @@
   --warning-color: #ffc107;
   --danger-color: #e91e63;
   --info-color: #2196f3;
-  --font-family: "Bahijat", Tahoma, Arial, sans-serif;
+  --font-family:  'IBM Plex Sans Arabic', 'Segoe UI', Arial, sans-serif;
   --transition: all 0.3s ease;
   --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   --border-radius: 10px;
@@ -40,15 +163,15 @@ body {
 
 /* Light/Dark Mode */
 .light-mode {
-  --text-color: #333;
-  --bg-color: #0f0f0f0;
-  --card-bg: #fff;
-  --border-color: #eaeaea;
+  --text-color: #f8f9fa;
+  --bg-color: #0f0f0f;
+  --card-bg: #1e1e1e;
+  --border-color: #333;
 }
 
 .dark-mode {
   --text-color: #f8f9fa;
-  --bg-color: #0f0f0f0;
+  --bg-color: #0f0f0f;
   --card-bg: #1e1e1e;
   --border-color: #333;
 }
@@ -515,7 +638,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #2d2522 0%, #3d3128 50%, #2d2522 100%);
+  background: #2f2f2f;
   z-index: 1;
 }
 
@@ -4487,8 +4610,8 @@ html {
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.2) 0%,
-    black 50%,
-    #6b3d28 100%
+    #2f2f2f 50%,
+    var(--danger-color) 100%
   );
   padding: 2rem 1rem;
   font-family: var(--font-family);
@@ -4627,12 +4750,8 @@ html {
 }
 
 .rating-option input[type="radio"]:checked + .rating-label {
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    #f44336 50%,
-    red 100%
-  );
+  background:  
+    var(--primary-color)  ;
   border-color: #6b3d28;
   color: white;
   transform: translateY(-2px);
@@ -4690,7 +4809,7 @@ html {
 }
 
 .yes-no-option input[type="radio"]:checked + .yes-no-label {
-  background: linear-gradient(135deg, #6b3d28, #8b5a3c);
+  background: var(--primary-color);
   border-color: #6b3d28;
   color: white;
   transform: scale(1.05);
@@ -4700,7 +4819,7 @@ html {
 .submit-btn {
   width: 100%;
   padding: 1.25rem;
-  background: linear-gradient(135deg, #6b3d28, #8b5a3c);
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 16px;
@@ -5416,3 +5535,118 @@ html {
   height: 300px;
 }
  
+
+          .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #2F2F2F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.5s ease;
+          }
+
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+
+          .loading-content {
+            text-align: center;
+            padding: 1rem;
+          }
+
+          .logo-container {
+            margin-bottom: 3rem;
+            animation: scaleIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          }
+
+          @keyframes scaleIn {
+            from {
+              transform: scale(0);
+              opacity: 0;
+            }
+            to {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+
+          .logo-icon {
+            font-size: 4rem;
+            color: var(--danger-color);
+            margin-bottom: 1rem;
+            display: block;
+            animation: bounce 2s infinite;
+          }
+
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+          }
+
+          .brand-name {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background:var(--primary-color);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: 2px;
+          }
+
+          .loading-spinner {
+            margin: 2rem 0;
+          }
+
+          .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid  var(--danger-color);;
+            border-top: 3px solid var(--border-color);
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+
+          .loading-text {
+            color: #d4a76a;
+            font-size: 1rem;
+            font-weight: 500;
+            animation: pulse 1.5s ease-in-out infinite;
+          }
+
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+
+          @media (max-width: 480px) {
+            .logo-icon {
+              font-size: 3rem;
+            }
+
+            .brand-name {
+              font-size: 2rem;
+            }
+
+            .spinner {
+              width: 40px;
+              height: 40px;
+            }
+
+            .loading-text {
+              font-size: 0.9rem;
+            }
+          }
+        

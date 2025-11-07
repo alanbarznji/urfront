@@ -3,6 +3,8 @@ import { useTranslation } from '@/src/data/useTranslation';
 import Link from 'next/link';
 import React, { use, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import logo from "../pages/assets/Logo.png";
+import Image from 'next/image';
 export default function ReviewPage() {
   const [language, setLanguage] = useState('en');
   const [showSuccess, setShowSuccess] = useState(false);
@@ -187,32 +189,25 @@ formData.atmosphere,
           darkMode ? "navbar-dark" : "navbar-light"
         } sticky-top shadow-sm`}
         style={{
-          background: darkMode
-            ? "linear-gradient(135deg, #252018 0%, #3d3128 100%)"
-            : "linear-gradient(135deg, #f9f6f3 0%, #e8d5c0 100%)",
+          background:  "navbar-dark",
+    
           padding: "12px 0",
         }}
       >
         <div className="container py-1">
-          <a className="navbar-brand d-flex align-items-center" href="#">
-            <i
-              className="fas fa-utensils me-2"
-              style={{
-                color: "linear-gradient(45deg, #b87333, #8c5425)",
-                fontSize: "1.5rem",
-              }}
-            ></i>
+            <a className="navbar-brand d-flex align-items-center" href="#">
+ 
             <span
               className="fw-bold"
               style={{
-                background: "linear-gradient(45deg, #b87333, #8c5425)",
+                background: "linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 fontSize: "1.6rem",
                 letterSpacing: "0.5px",
               }}
             >
-              UR
+              <Image src={logo} height={50} width={50}/>
             </span>
           </a>
 
@@ -224,12 +219,11 @@ formData.atmosphere,
               <button
                 className="language-selector btn btn-sm d-flex align-items-center gap-2"
                 style={{
-                  backgroundColor: darkMode
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : "rgba(0, 0, 0, 0.05)",
-                  border: darkMode
-                    ? "1px solid rgba(255, 255, 255, 0.2)"
-                    : "1px solid rgba(0, 0, 0, 0.1)",
+                  background:  "linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
+              
+                  border:  
+                   "1px solid linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
+ 
                   color: "var(--text-color)",
                   borderRadius: "20px",
                   padding: "8px 16px",
@@ -264,7 +258,7 @@ formData.atmosphere,
                   style={{
                     minWidth: "220px",
                     [language === "ar" ? "left" : "right"]: 0,
-                    backgroundColor: darkMode ? "#2a2a2a" : "white",
+                    background: darkMode ? "#2f2f2f" : "white",
                     border: darkMode ? "1px solid #444" : "1px solid #ddd",
                     padding: "0.5rem",
                     animation: "fadeSlideIn 0.3s ease",
@@ -286,11 +280,9 @@ formData.atmosphere,
                         padding: "10px 12px",
                         borderRadius: "10px",
                         cursor: "pointer",
-                        backgroundColor:
+                        background:
                           language === lang.code
-                            ? darkMode
-                              ? "rgba(255, 126, 95, 0.2)"
-                              : "rgba(255, 107, 107, 0.1)"
+                            ? "linear-gradient(135deg, #f44336 0%, #e91e63 100%)"
                             : "transparent",
                       }}
                     >
@@ -307,13 +299,11 @@ formData.atmosphere,
               <Link
                 className="currency-selector btn btn-sm d-flex align-items-center gap-2"
                 style={{
-                  backgroundColor: darkMode
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : "rgba(0, 0, 0, 0.05)",
-                  border: darkMode
-                    ? "1px solid rgba(255, 255, 255, 0.2)"
-                    : "1px solid rgba(0, 0, 0, 0.1)",
-                  color: darkMode ? "#ffffff" : "#333333",
+                  background:   "linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
+                  
+                  border:   "1px solid linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
+                   
+                  color: "white",
                   borderRadius: "20px",
                   padding: "8px 16px",
                   transition: "all 0.3s ease",
@@ -334,12 +324,8 @@ formData.atmosphere,
               className="btn btn-sm d-flex align-items-center gap-2"
               onClick={loadReviews}
               style={{
-                backgroundColor: darkMode
-                  ? "rgba(255, 255, 255, 0.1)"
-                  : "rgba(0, 0, 0, 0.05)",
-                border: darkMode
-                  ? "1px solid rgba(255, 255, 255, 0.2)"
-                  : "1px solid rgba(0, 0, 0, 0.1)",
+                background: "linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
+                border: "linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
                 color: darkMode ? "#ffffff" : "#333333",
                 borderRadius: "20px",
                 padding: "8px 16px",
@@ -354,24 +340,7 @@ formData.atmosphere,
               </span>
             </button>
 
-            {/* Dark Mode Toggle */}
-            <button
-              className="btn btn-sm rounded-circle d-flex align-items-center justify-content-center"
-              onClick={toggleDarkMode}
-              style={{
-                width: "38px",
-                height: "38px",
-                backgroundColor: darkMode
-                  ? "rgba(255, 255, 255, 0.1)"
-                  : "rgba(0, 0, 0, 0.05)",
-              }}
-            >
-              {darkMode ? (
-                <i className="fas fa-sun" style={{ color: "#ff7e5f" }}></i>
-              ) : (
-                <i className="fas fa-moon"></i>
-              )}
-            </button>
+        
           </div>
         </div>
       </nav>
@@ -558,8 +527,12 @@ formData.atmosphere,
 
       {/* Reviews Modal */}
       {showReviewsModal && (
-        <div className="modal-overlay" onClick={() => setShowReviewsModal(false)}>
-          <div className="reviews-modal" onClick={(e) => e.stopPropagation()} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="modal-overlay"  onClick={() => setShowReviewsModal(false)}>
+          <div className="reviews-modal" style={{
+          background:   "linear-gradient(135deg, #252018 0%, #3d3128 100%)"
+          
+        }}
+        onClick={(e) => e.stopPropagation()} dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <div className="reviews-modal-header">
               <h2>
                 <i className="fas fa-star"></i>

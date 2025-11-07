@@ -1,11 +1,146 @@
-/* styles/customStyles.css */
+ 
+ /* Bahijat Font - Extra Light */
 
-/* ===== Variables ===== */
-/* Bronze Color Scheme Variables - Add to the top of customStyles.css */
-@import url('https://fonts.googleapis.com/css2?family=Lemonada:wght@300..700&family=Readex+Pro:wght@160..700&display=swap');
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-ExtraLight.ttf") format("truetype");
+
+  font-weight: 200;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Light */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-Light.ttf") format("truetype");
+
+  font-weight: 300;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Semi Light */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-SemiLight.ttf") format("truetype");
+
+  font-weight: 350;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Regular/Plain */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-Plain.ttf") format("truetype");
+
+  font-weight: 400;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Semi Bold */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-SemiBold.ttf") format("truetype");
+
+  font-weight: 600;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Bold */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-Bold.ttf") format("truetype");
+
+  font-weight: 700;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Extra Bold */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-ExtraBold.ttf") format("truetype");
+
+  font-weight: 800;
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
+
+ 
+
+/* Bahijat Font - Black */
+
+@font-face {
+
+  font-family: "Bahijat";
+
+  src: url("/font/Bahij_TheSansArabic-Black.ttf") format("truetype");
+
+  font-style: normal;
+
+  font-display: swap;
+
+}
 :root {
  
-    --primary: #f44336;
+    --primary: linear-gradient(135deg, #f44336 0%, #e91e63 100%);
     --primary-light: #e57373;
     --primary-dark: #d32f2f;
     --secondary: #c62828;
@@ -35,21 +170,20 @@
   --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
   --hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
-  --font-family: "Readex Pro",
-    sans-serif;
+  --font-family:  'IBM Plex Sans Arabic', 'Segoe UI', Arial, sans-serif;
       /* font-optical-sizing: auto;
       font-weight: <weight>;
       font-style: normal; */
 }
 
 /* Light/Dark Theme with Bronze colors */
-/* .light-mode {
-  --bg-color: #0f0f0f0f;
+.light-mode {
+  --bg-color: #0f0f0f;
   --card-bg: #ffffff;
   --text-color: #3a2e24;
   --border-color: #e6ded4;
   --muted-color: #8a7968;
-} */
+}
 
 .dark-mode {
   --bg-color: #0f0f0f;
@@ -1919,7 +2053,7 @@ body {
 }
 
 .category-btn-new.active .category-icon-wrapper {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  background:  var(--primary) ;
   color: white;
   box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
   transform: scale(1.1);
@@ -1956,7 +2090,7 @@ body {
 }
 
 .category-btn-new.active .category-name {
-  color: var(--primary);
+  color:white;
   opacity: 1;
   font-weight: 700;
 }
@@ -2052,7 +2186,7 @@ body {
 }
 
 .price-tag-new {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  background:  var(--primary);
   color: white;
   padding: 6px 12px;
   border-radius: 12px;

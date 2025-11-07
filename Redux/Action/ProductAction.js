@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: " http://localhost:4000/api/v1",
+  baseURL: " https://urcompany.cloud/api/api/v1",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -182,18 +182,48 @@ export const DeleteProductAction = (id) => {
     }
   };
 };
-export const LoveProductAction = (id,formData) => {
+export const LoveProductAction = (id,formData,Date) => {
   return async (dispatch) => {
 
     dispatch({ type: "PlaceReqStart" });
     try {
       console.log("dakoda");
+      const datalocal=localStorage.getItem("lovedata");
+     const dataarray= JSON.parse(datalocal) || [];
+    const check = dataarray.findIndex((item) => item.id === id);
+    
+    console.log(check,"check");
+    if(check==-1){
+      dataarray.push({ id: id, Date: Date });
+
       await API.put(`/product/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("Token")}`,
         },
-      });// backend sends 204 with no body
+      }); // backend sends 204 with no body
+    }else{
+
+  console.log(
+    dataarray[check].Date + 24 * 60 * 60 * 1000 < Date,
+    "----------",
+    dataarray[check].Date + 24 * 60 * 60 * 1000
+    
+  );
+  if (dataarray[check].Date + 24 * 60 * 60 * 1000 < Date) {
+    dataarray[check].Date = Date;
+
+    await API.put(`/product/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("Token")}`,
+      },
+    }); // backend sends 204 with no body
+  } else {
+  }
+}
+      console.log(dataarray,"dataarray");
+      localStorage.setItem("lovedata", JSON.stringify(dataarray));
       const list = await API.get(`/product`);
       dispatch({
         type: "ProductPut",

@@ -33,10 +33,17 @@ export function useTranslation(language) {
       review: "Review Us Here",
       menu: "Menu",
       restorantOPtions: "Restaurant Options",
-      common:" Common",
+      common: " Common",
+      topRated: "Top Rated",
+      searchMenu: "Search the Menu",
+      submit: " Submit Review",
+      yes: "Yes",
+      no: "No",
+      tryDifferentSearch: "Try Different Search",
+      noResultsFound: "No Results Found",
       // ...rest of translations
     },
- 
+
     ar: {
       // Arabic translations
       pageTitle: "سافوري - قائمة طعام شهية",
@@ -93,7 +100,14 @@ export function useTranslation(language) {
       review: "قيمنا هنا",
       menu: "القائمة",
       restorantOPtions: "خيارات المطعم",
-      common:" شائع",
+      common: " شائع",
+      topRated: "الأعلى تقييماً",
+      searchMenu: "ابحث في القائمة",
+      submit: " إرسال التقييم",
+      yes: "نعم",
+      no: "لا",
+      noResultsFound: "لم يتم العثور على نتائج",
+      tryDifferentSearch: "حاول البحث من جديد",
       // ...rest of translations
     },
     // Add more languages as needed
