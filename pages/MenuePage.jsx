@@ -1,5 +1,5 @@
 // pages/Components/MenuePage.js - UPDATED WITH TABLE SELECTION
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import CategorySlider from "./Components/CategorySlider";
 import MenuItemCard from "./Components/MenuItemCard";
@@ -26,6 +26,7 @@ export default function MenuePage() {
   const [filtershow, setfiltershow] = useState([]);
   const [buttonSelection, setButtonSelection] = useState("common");
   const dispatch = useDispatch();
+  const categoryRefs = useRef({});
   
   useEffect(() => {
     dispatch(GetProductAction());
@@ -50,19 +51,41 @@ export default function MenuePage() {
 
   const categories = [{ name: "all",namear:"الكل"  }, ...Category];
 
+  // Filter only by search query, not by category
   const filteredMenu = product.filter((item) => {
-    if (activeCategory !== "all" && item.category.name !== activeCategory)
-      return false;
     if (
       searchQuery &&
       !item.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      !item.description.toLowerCase().includes(searchQuery.toLowerCase())&&    
+      !item.description.toLowerCase().includes(searchQuery.toLowerCase())&&
       !item.namear.toLowerCase().includes(searchQuery.toLowerCase()) &&
       !item.descriptionar.toLowerCase().includes(searchQuery.toLowerCase())
     )
       return false;
     return true;
   });
+
+  // Group products by category
+  const groupedProducts = {};
+  filteredMenu.forEach((item) => {
+    const categoryName = item.category.name;
+    if (!groupedProducts[categoryName]) {
+      groupedProducts[categoryName] = [];
+    }
+    groupedProducts[categoryName].push(item);
+  });
+
+  // Scroll to category section
+  const scrollToCategory = (categoryName) => {
+    setActiveCategory(categoryName);
+    if (categoryName === "all") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (categoryRefs.current[categoryName]) {
+      const offset = 150; // Offset for navbar
+      const elementPosition = categoryRefs.current[categoryName].getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    }
+  };
 const getFilteredProductsByButton = (e) => {
   setButtonSelection(e);
  if (buttonSelection === "suggest") {
@@ -328,31 +351,75 @@ const getFilteredProductsByButton = (e) => {
           <CategorySlider
             categories={categories}
             activeCategory={activeCategory}
-            setActiveCategory={setActiveCategory}
+            setActiveCategory={scrollToCategory}
             t={t}
             language={language}
             darkMode={darkMode}
           />
 
           {filteredMenu.length > 0 ? (
-            <div className="menu-grid">
-              {filteredMenu.map((item, index) => (
-                <div
-                  key={item.id}
-                  className="menu-item"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <MenuItemCard
-                    item={item}
-                    currencySymbol={getCurrencySymbol()}
-                    convertPrice={convertPrice}
-                    t={t}
-                    language={language}
-                    darkMode={darkMode}
-             
-                  />
-                </div>
-              ))}
+            <div>
+              {Category.map((category) => {
+                const categoryProducts = groupedProducts[category.name];
+                if (!categoryProducts || categoryProducts.length === 0) return null;
+
+                return (
+                  <div
+                    key={category._id}
+                    ref={(el) => (categoryRefs.current[category.name] = el)}
+                    className="category-section"
+                    style={{ marginBottom: "3rem" }}
+                  >
+                    {/* Category Header */}
+                    <div className="category-header" style={{
+                      marginBottom: "1.5rem",
+                      paddingBottom: "0.75rem",
+                      borderBottom: "2px solid #f44336",
+                    }}>
+                      <h2 style={{
+                        fontSize: "1.8rem",
+                        fontWeight: "bold",
+                        color: darkMode ? "#f44336" : "#f44336",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem"
+                      }}>
+                        {category.icon && <i className={category.icon}></i>}
+                        {language === "ar" ? category.namear : category.name}
+                        <span style={{
+                          fontSize: "0.9rem",
+                          fontWeight: "normal",
+                          color: darkMode ? "#999" : "#666",
+                          marginLeft: language === "ar" ? "0" : "auto",
+                          marginRight: language === "ar" ? "auto" : "0"
+                        }}>
+                          ({categoryProducts.length})
+                        </span>
+                      </h2>
+                    </div>
+
+                    {/* Products Grid */}
+                    <div className="menu-grid">
+                      {categoryProducts.map((item, index) => (
+                        <div
+                          key={item.id}
+                          className="menu-item"
+                          style={{ animationDelay: `${index * 0.05}s` }}
+                        >
+                          <MenuItemCard
+                            item={item}
+                            currencySymbol={getCurrencySymbol()}
+                            convertPrice={convertPrice}
+                            t={t}
+                            language={language}
+                            darkMode={darkMode}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <div className="empty-state">
