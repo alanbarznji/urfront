@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
-    <title>urcaffe</title>
+    <title>urRestorant</title>
       <body className="antialiased">
         
         <Main />
