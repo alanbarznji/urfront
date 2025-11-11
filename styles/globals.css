@@ -342,108 +342,9 @@ body {
   border-bottom: 1px solid var(--border-color);
 }
 
-/* Footer */
-.footer {
-  background-color: var(--dark-color);
-}
+/* Footer - Removed unused footer navigation CSS */
 
-.footer-brand {
-  font-size: 1.5rem;
-}
-
-.social-links {
-  display: flex;
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.social-link {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-  border-radius: 50%;
-  transition: var(--transition);
-}
-
-.social-link:hover {
-  background-color: var(--primary-color);
-  transform: translateY(-5px);
-  color: white;
-}
-
-.hours-list,
-.contact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.hours-list li,
-.contact-list li {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  color: #adb5bd;
-}
-
-.hours-list li.special {
-  color: var(--accent-color);
-  font-weight: 500;
-}
-
-.contact-list li {
-  display: flex;
-  align-items: flex-start;
-}
-
-.contact-list li i {
-  margin-right: 10px;
-  color: var(--primary-color);
-}
-
-.footer-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 20px;
-  justify-content: flex-end;
-}
-
-.footer-links li a {
-  color: #adb5bd;
-  text-decoration: none;
-  transition: var(--transition);
-}
-
-.footer-links li a:hover {
-  color: var(--primary-color);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .footer-links {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .hours-list li,
-  .contact-list li {
-    flex-direction: column;
-    margin-bottom: 15px;
-  }
-
-  .hours-list li span:first-child,
-  .contact-list li span:first-child {
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
-}
+/* Responsive Adjustments - Removed unused footer CSS */
 
 /* Animation for new items */
 @keyframes pulse {
@@ -485,11 +386,6 @@ body {
 [dir="rtl"] .overlay-buttons {
   right: auto;
   left: 10px;
-}
-
-[dir="rtl"] .contact-list li i {
-  margin-right: 0;
-  margin-left: 10px;
 }
 /* welcome page style */
 .welcome-page {

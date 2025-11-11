@@ -409,88 +409,7 @@ body {
   transform: translateY(0);
 }
 
-/* ===== Footer ===== */
-.footer {
-  background-color: var(--dark);
-  color: white;
-}
-
-.footer-brand {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.social-links {
-  display: flex;
-  gap: 15px;
-  margin-top: 1.5rem;
-}
-
-.social-link {
-  width: 40px;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: var(--transition);
-}
-
-.social-link:hover {
-  background-color: var(--primary);
-  transform: translateY(-5px);
-  color: white;
-}
-
-.hours-list, .contact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.hours-list li, .contact-list li {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  color: #adb5bd;
-}
-
-.hours-list li.special {
-  color: var(--primary-light);
-  font-weight: 500;
-}
-
-.contact-list li {
-  display: flex;
-  align-items: flex-start;
-}
-
-.contact-list li i {
-  margin-right: 15px;
-  color: var(--primary);
-}
-
-.footer-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 20px;
-  justify-content: flex-end;
-}
-
-.footer-links li a {
-  color: #adb5bd;
-  text-decoration: none;
-  transition: var(--transition);
-}
-
-.footer-links li a:hover {
-  color: var(--primary);
-}
+/* ===== Footer - Removed unused footer navigation CSS ===== */
 
 /* ===== Animation for Menu Items ===== */
 @keyframes fadeIn {
@@ -577,21 +496,6 @@ body {
     gap: 1.5rem;
   }
   
-  .footer-links {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-  
-  .hours-list li, .contact-list li {
-    flex-direction: column;
-  }
-  
-  .hours-list li span:first-child, .contact-list li span:first-child {
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
-  
   .main-title::after {
     width: 40px;
   }
@@ -617,9 +521,6 @@ body {
     grid-template-columns: 1fr;
   }
   
-  .contact-list li i {
-    margin-top: 0.25rem;
-  }
 }
 
 /* ===== Additional Effects ===== */
